@@ -493,6 +493,10 @@ Provider-specific SDK shapes remain at adapters. Product-domain contracts use
 Clio vocabulary and include organization scope, versions, stable states, and
 stable errors.
 
+The system graphs, lifecycle and trust-boundary matrices, recovery contracts,
+architecture decisions, verification map, and M1 gate live in
+[`docs/architecture/system-architecture-and-decision-records.md`](docs/architecture/system-architecture-and-decision-records.md).
+
 ### Code organization contract
 
 Clio uses a feature-sliced React client and an MVC-shaped FastAPI delivery
