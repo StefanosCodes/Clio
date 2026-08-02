@@ -292,6 +292,10 @@ not. When the allowance is exhausted, new AI work pauses, already-reserved
 work may finish, and existing packets, chats, edits, exports, and deterministic
 actions remain available. V1 has no surprise overage billing.
 
+The normative record shapes, cost fixture, reservation cases, and credential
+matrix live in
+[`docs/architecture/pricing-usage-and-environment-contract.md`](docs/architecture/pricing-usage-and-environment-contract.md).
+
 ## Core workflow
 
 ```mermaid
