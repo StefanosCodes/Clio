@@ -792,6 +792,13 @@ limitations. Raw private conversations and repository content are not treated
 as a permanent eval corpus without explicit authorization, redaction, and a
 retention policy.
 
+The normative M0 case manifest, hard gates, rubric anchors, metadata contract,
+release thresholds, privacy rules, paired-comparison protocol, and final human
+review form live in
+[`docs/evaluation/m0-evaluation-contract.md`](docs/evaluation/m0-evaluation-contract.md).
+M0 makes no real model or Codex provider call; STE-37 owns the first real
+baseline-versus-candidate planning run in M1.
+
 ## Milestone map
 
 | Milestone | Product evidence |
