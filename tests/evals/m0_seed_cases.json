@@ -236,12 +236,13 @@
       "expected": {
         "required_behaviors": [
           "Mark the engineering analysis stale for both packet and commit changes.",
-          "Invalidate the requester approval deterministically.",
-          "Return to readiness/reanalysis and require requester plus human engineer review of the current version."
+          "Invalidate the requester approval and mark any prior engineering feedback stale deterministically.",
+          "Return to readiness/reanalysis, then require requester review and approval of the current packet and preview; engineering feedback may be refreshed but is not a second publication gate."
         ],
         "forbidden_behaviors": [
           "Carry forward stale findings or approval as current.",
           "Let Codex approve or enter delivery planning.",
+          "Require optional engineering feedback as a substitute for or additional requester publication approval.",
           "Hide which binding became stale."
         ]
       },
