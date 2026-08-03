@@ -163,10 +163,25 @@ A packet contains:
 | Delivery plan | Proposed milestones, epics, tickets, and dependencies |
 | Revision history | What changed, why it changed, and which approvals became stale |
 
-Organizations will eventually define Packet Templates: required sections,
-required questions, readiness rules, approval policies, and publishing
-conventions. The MVP defines the template contract and proves one excellent
-default before building a general template designer.
+The MVP supports two native ways to reach the same Build Packet contract:
+
+- **Clio templates** provide opinionated, built-in forms for common planning
+  outcomes.
+- **Workspace tools** let an organization create its own reusable form by
+  naming the questions it needs and optionally adding answer guidance, source
+  context, and a requested value or output format.
+
+Both appear as selectable tools in the chat composer. Selecting one guides the
+conversation without disabling freeform chat, so a requester can answer the
+form, ask questions, add context, and refine the resulting packet in one
+surface. These tools are declarative planning contracts, not executable code
+or arbitrary model/tool permissions.
+
+Workspace tools are tenant scoped. Every member can discover and use them and
+can see who created and last changed each version. The creator and workspace
+Admins may edit, archive, or duplicate a tool; other Members cannot silently
+change it. Every generated packet retains the exact tool and version used so a
+later edit cannot rewrite the history of an approved packet.
 
 Packet Templates are not conversation scripts. They define the durable output
 contract and readiness policy. A workflow skill decides how Clio helps the user
@@ -195,21 +210,23 @@ estimates, sequencing changes, and implementation packaging.
 ## Low-friction interaction model
 
 The default entry point is an empty chat box. A user can simply describe what
-they want, paste a conversation, attach a document, or reference connected
-context. Choosing a workflow first is never required.
+they want, attach approved context, or select a built-in or workspace-created
+form/tool from the chat composer. Choosing a tool is optional, and the user can
+continue chatting before, during, and after its questions.
 
 Three optional shortcuts make common intentions easier to express:
 
 - **Plan new work** — turn an idea into a new Build Packet.
-- **Turn context into work** — begin from a Slack or Teams conversation,
-  document, transcript, screenshot, or other approved source.
+- **Turn context into work** — begin from a document, transcript, screenshot,
+  selected GitHub repository, or other approved source.
 - **Improve existing work** — clarify or repair an existing packet, Linear
   issue, or project.
 
 Clio infers the likely workflow from the message and context, briefly confirms
-its understanding, and lets the user override it. These shortcuts invoke
-versioned backend workflow skills; they do not create separate user-facing
-agents or rigid forms.
+its understanding, and lets the user override it. Shortcuts and selected forms
+invoke versioned backend workflow skills; they do not create separate
+user-facing agents. A form supplies declared questions and output guidance,
+while chat remains adaptive.
 
 The conversation follows a small set of rules:
 
@@ -222,20 +239,23 @@ The conversation follows a small set of rules:
    preserve it as an explicit engineering question.
 6. Never require the requester to choose milestones, epics, or tickets.
 
-Chat is the primary surface. A live Build Packet appears as a collapsible side
-panel on larger screens and a drawer on smaller screens. It shows what Clio
-understands, which claims have evidence, which decisions remain open, and what
-will be shared with engineering without forcing the user to edit a long form.
+Chat is the primary surface. Once created, the live Build Packet is an artifact
+the user can open and read in a right-side panel on larger screens or a drawer
+on smaller screens. It shows what Clio understands, which claims have evidence,
+which decisions remain open, and what will be shared with engineering. The user
+requests revisions through chat and reviews the updated artifact before
+approval; direct long-form editing is not required.
 
 ## Simple organization and responsibility model
 
 The MVP has only two organization roles:
 
 - **Admin** — the organization creator; can invite or remove members, connect
-  integrations, manage organization settings and the default Packet Template,
-  and authorize publication.
-- **Member** — can create, edit, discuss, and review planning work available to
-  the organization.
+  integrations, manage organization settings and built-in/workspace planning
+  tools, and authorize publication.
+- **Member** — can create, use, discuss, and review planning work and workspace
+  tools available to the organization. A tool creator may edit, archive, or
+  duplicate their own tool; Admins may do so for any workspace tool.
 
 An invited user becomes a Member after accepting. A user who belongs to more
 than one organization chooses an active organization. Every organization-owned
@@ -243,12 +263,13 @@ object is resolved from verified membership; the backend never trusts a
 client-supplied organization identifier by itself.
 
 Requester, engineering reviewer, and publisher are responsibilities on a
-specific Build Packet, not additional organization-wide roles. The requester
-approves business intent and product scope. The assigned engineering reviewer
-accepts readiness or requests changes without surrendering implementation
-authority. A member authorized by organization policy previews the external
-changes and confirms publication. Custom roles, departments, SCIM, and a
-granular permission builder are deferred.
+specific Build Packet, not additional organization-wide roles. In V1, one
+requester explicitly approves the exact packet and publication preview before
+Clio may create or update Linear work. An engineering reviewer may comment or
+request changes, but a second approval is not required for V1 publication;
+engineering retains authority over architecture and implementation. Custom
+roles, multi-person approval policies, departments, SCIM, and a granular
+permission builder are deferred.
 
 ## Pricing and unified usage
 
@@ -307,13 +328,13 @@ flowchart LR
     R["Readiness review"]
     C["Read-only Codex engineering analysis"]
     A["Requester approval"]
-    G["Engineering review"]
+    G["Optional engineering feedback"]
     D["Delivery plan"]
     P["Publish to Linear"]
 
-    I --> Q --> E --> B --> R --> C --> A --> G
-    G -->|changes requested| Q
-    G -->|approved| D --> P
+    I --> Q --> E --> B --> R --> C --> A --> D --> P
+    G -->|feedback| Q
+    B -.-> G
     C -->|typed findings tied to packet version and commit| B
 ```
 
@@ -326,7 +347,8 @@ domain code decides whether a proposed transition is legal.
 
 The first polished experience is **conversation to approved Linear work**:
 
-1. A requester starts with freeform chat or an optional outcome shortcut.
+1. A requester starts with freeform chat or selects a built-in or
+   workspace-created form/tool from the composer.
 2. Clio reflects its understanding, infers a workflow skill, and asks only the
    next question whose answer affects scope, behavior, trust, evidence, or
    acceptance.
@@ -340,14 +362,16 @@ The first polished experience is **conversation to approved Linear work**:
 7. Once GitHub evidence is available, Clio queues a read-only Codex engineering
    analysis against the exact packet version and commit-pinned repository
    snapshot. Its typed findings are evidence and questions, not approval.
-8. The requester reviews and approves business intent and product scope on the
-   resulting exact packet version.
-9. The assigned engineer reviews the same packet plus Codex findings, adds
-   feedback, and accepts readiness or requests changes.
+8. The requester opens the generated packet in the right-side artifact panel,
+   asks for any revisions through chat, and approves the resulting exact packet
+   version.
+9. An engineer may review the same packet plus Codex findings and add feedback,
+   but V1 does not require a second approver before Linear publication.
 10. Clio propagates accepted changes through affected requirements, acceptance
    criteria, decisions, and proposed work.
 11. Clio previews the lightest useful Linear structure in plain language.
-12. An authorized member confirms an idempotent publication.
+12. The requester confirms **Approve & Publish to Linear** for the exact
+    preview. The deterministic adapter then performs the idempotent write.
 
 External Clio MCP access for coding clients remains a later interoperability
 slice. It is useful, but it does not block the core V1 idea-to-Linear workflow.
@@ -370,7 +394,7 @@ Clio is not differentiated by text generation or ticket creation alone.
 
 Clio's proposed defensibility is the accumulated planning system:
 
-- organization-owned Packet Templates and approval policies;
+- organization-owned built-in and custom planning tools with version history;
 - a durable graph from evidence to claims, requirements, decisions, and work;
 - repository-aware readiness review;
 - requester and engineering agreement tied to exact artifact versions;
@@ -456,15 +480,17 @@ These concepts remain separate:
 | Concept | Responsibility |
 | --- | --- |
 | Workflow skill | Guides the conversational strategy for a user intent, such as planning new work or turning approved context into work |
-| Packet Template | Defines required artifact sections, readiness rules, approval policy, and publishing conventions |
+| Built-in template | Defines Clio's opinionated questions, artifact sections, readiness rules, and publishing conventions |
+| Workspace tool | Defines tenant-owned questions plus optional guidance, context, and requested value/output format without executable behavior |
 | Packet profile | Selects an appropriate depth within the template without changing its core contract |
 | Specialist agent | Performs a bounded reasoning task only when its tools, context, policy, output contract, or evaluation needs materially differ |
 | Publisher adapter | Maps an approved delivery plan into Linear without redefining product intent |
 
-The MVP ships one excellent default Packet Template and models template
-versioning in the domain, but defers a general admin template builder. Every
-workflow run records the selected skill, skill version, template, template
-version, and profile so its behavior can be reproduced and evaluated.
+The MVP ships excellent built-in templates plus a lightweight form-based
+workspace-tool builder. It defers arbitrary executable tools, conditional
+workflow programming, and granular approval-policy design. Every workflow run
+records the selected skill, skill version, tool/template identity, exact
+version, creator, and profile so its behavior can be reproduced and evaluated.
 
 ## Technical foundation
 
@@ -644,16 +670,20 @@ task rather than maximized globally.
 
 The MVP proves one complete workflow for one organization pattern:
 
-> A GTM or operations requester turns an ambiguous internal-software idea into a
-> repository-grounded, requester-approved, engineering-reviewed Build Packet
-> and publishes its delivery plan to Linear.
+> A nontechnical founder or business requester turns an ambiguous software idea
+> into a repository-grounded, requester-approved Build Packet, optionally gets
+> engineering feedback, and publishes its delivery plan to Linear.
 
 Required MVP capabilities:
 
-- freeform chat with three optional outcome shortcuts;
+- freeform chat with optional built-in and workspace-created form/tools in the
+  native composer;
 - natural discovery that reflects intent and asks one consequential question at
   a time;
-- one default Build Packet Template;
+- opinionated built-in packet templates plus tenant-scoped custom forms with
+  declared questions, guidance/context, and value/output format;
+- workspace-wide discovery and use, visible creator/version metadata,
+  creator/Admin management, and exact tool-version retention on packets;
 - typed packet creation, patching, validation, versioning, and manual editing;
 - Admin/Member organization identity, invitations, active-organization
   selection, and tenant isolation;
@@ -669,7 +699,8 @@ Required MVP capabilities:
 - explicit text paste and file-upload ingestion with preview, provenance,
   retention, deletion, and prompt-injection handling;
 - readiness findings and unresolved-question tracking;
-- requester approval, engineering feedback, and revision history;
+- one explicit requester approval, optional engineering feedback, and revision
+  history;
 - delivery-plan preview and idempotent Linear publication;
 - run tracing and representative evaluations.
 
@@ -693,8 +724,8 @@ delay the first useful demonstration.
   proven.
 - Building a general-purpose repository search engine.
 - Automatically ingesting an organization's entire Slack or Drive history.
-- Building a no-code Packet Template designer before the default template is
-  validated.
+- Building arbitrary executable tools, conditional workflow programming, or a
+  granular permissions/approval-policy designer.
 
 ## First complete demonstration
 
@@ -809,7 +840,7 @@ baseline-versus-candidate planning run in M1.
 | M3 — Evaluated Clio Planning Agent | A messy idea becomes a valid packet through one controlled planning agent and typed final output |
 | M4 — GitHub Repository Evidence | Planning claims use authorized, commit-pinned repository evidence |
 | M5 — Codex Engineering Specialist | A durable worker returns safe, cited, version-bound Codex analysis from an isolated read-only checkout |
-| M6 — Review & Adaptive Delivery Plan | Requester and human engineering review produce durable revisions and the lightest traceable delivery plan |
+| M6 — Review & Adaptive Delivery Plan | Requester approval and optional human engineering feedback produce durable revisions and the lightest traceable delivery plan |
 | M7 — Linear End-to-End Publication | An authorized member previews and publishes the accepted Linear structure exactly once |
 | M8 — Pilot Readiness & Connector Decision | The workflow is pilot-ready and evidence selects Slack, Teams, neither, and whether external Clio MCP should ship |
 
@@ -831,14 +862,22 @@ reorder, or reject the proposed issues while preserving packet traceability.
 - The only accepted V1 specialist is Codex. Additional specialists require
   evaluation evidence.
 - Agents propose typed changes; deterministic services apply legal changes.
-- Requester and engineering approval are distinct and version-bound.
-- Requester, engineering reviewer, and publisher are packet-specific
+- One explicit requester approval of the exact packet and publication preview
+  is sufficient for V1 Linear publication. Engineering feedback is supported,
+  but multi-person approval policy is deferred.
+- Requester, optional engineering reviewer, and publisher are packet-specific
   responsibilities, not new organization-wide roles.
-- Freeform chat is the default; outcome shortcuts are optional and workflow
-  inference is always overridable.
-- Workflow skills guide conversation, while Packet Templates define the durable
-  artifact contract.
-- The MVP ships one default template and defers the general template builder.
+- Freeform chat is always available; built-in templates and tenant-scoped
+  workspace forms/tools are optional selections in the native chat composer.
+- A workspace tool declares questions plus optional answer guidance, source
+  context, and requested value/output format; it grants no executable behavior.
+- Workspace members can discover and use every tenant-scoped tool and see its
+  creator/version history. Creators and Admins can edit, archive, or duplicate;
+  packets retain the exact version used.
+- The generated Build Packet is a reviewable artifact in a right-side panel or
+  responsive drawer and is revised conversationally before approval.
+- GitHub and Linear are the V1 core integrations. Direct Slack/Teams connectors
+  and external Clio MCP are deferred and do not block the core path.
 - Repository evidence is commit pinned and cited.
 - V1 GitHub access uses a least-privilege GitHub App with explicit repository
   selection and on-demand snapshots rather than broad indexing.
@@ -897,10 +936,10 @@ reorder, or reject the proposed issues while preserving packet traceability.
 - Which initial persona has the highest-frequency and highest-cost handoff
   problem?
 - What is the smallest packet that developers consistently consider ready?
-- Which questions must every organization answer, and which belong in a custom
-  template?
-- Which packet changes invalidate requester approval, engineering approval, or
-  both?
+- Which built-in tools produce the fastest first value, and which custom fields
+  do pilot workspaces repeatedly add?
+- Which packet changes invalidate requester approval or make prior engineering
+  feedback stale?
 - What evidence-retention and deletion controls will pilot customers require?
 - What internal Starter allowance gives customers useful monthly capacity while
   covering model, infrastructure, payment, evaluation, and support costs?
