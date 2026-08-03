@@ -27,6 +27,7 @@ apps/
         auth/
         organization-switching/
         conversations/
+        workspace-tools/
         packet-editing/
         source-ingestion/
         github-connection/
@@ -38,6 +39,7 @@ apps/
       entities/               # domain-shaped state and presentation
         organization/
         conversation/
+        planning-tool/
         build-packet/
         evidence/
         engineering-analysis/
@@ -64,6 +66,7 @@ apps/
         identity/
         billing/
         conversation/
+        planning_tools/
         packet/
         sources/
         repository_context/
@@ -130,6 +133,12 @@ hooks, state, or schemas.
 * `shared` contains provider-neutral UI/utilities/config and the generated API
   client boundary. It must not contain Clio business rules merely to avoid an
   import.
+
+The `workspace-tools` feature owns composer selection plus create, version,
+archive, and duplicate actions. The `planning-tool` entity renders declared
+questions, guidance, output format, creator, lifecycle, and version metadata.
+Neither layer executes tenant-supplied code or converts stored text into new
+agent/tool authority.
 
 Server state is accessed through generated API operations wrapped by the
 owning feature. Provider DTOs are not copied into UI state. Organization switch
@@ -238,12 +247,13 @@ API client and DTOs. Provider-specific DTOs stop at infrastructure adapters.
 | Subscription and usage | `PlanPolicy`, `SubscriptionSnapshot`, `UsagePeriod`, `UsageReservation`, `UsageEvent`, `TokenUsage`, `ModelPriceVersion`, `CostSnapshot`, `UsageDecision`, `BillingClass`, `MeteredOperation` | usage-status and billing surfaces; model/Codex operation status | policy/subscription/period/reservation/event/price records; integer micro-USD, atomic settlement, unique provider response, immutable historical price basis |
 | Conversation and runtime | `Conversation`, `Message`, `SessionItem`, `WorkflowRun`, `RunEvent`, discriminated `StreamEvent`, `StreamCursor`, `RunSnapshot`, `PlanningTurnResult`, discriminated `NextAction`, `PacketPatch`, `MutationReceipt`, `VersionConflict`, stable run/error states | conversation feature, SSE reducer, reconnect and conflict UI | conversations, messages/session items, runs/events; one mutating turn, monotonic cursor, idempotent terminal state, optimistic packet base version |
 | Frontend control state | TypeScript-only derived `OrganizationCacheScope`, `StreamViewState`, `ReconnectState`, `ClientDraftState`; no Pydantic twin | feature reducers, organization-scoped query keys, router, local UI | none; derived client state never becomes durable domain truth or duplicates API DTOs |
-| Build Packet | `BuildPacket`, `BuildPacketVersion`, `Requirement`, `AcceptanceCriterion`, `Claim`, `Assumption`, `Unknown`, `Decision`, `Risk`, `Dependency`, `Revision`, `PacketTemplateRef`, `PacketProfile`, `WorkflowSkillRef` | packet editor, readiness, review, delivery planning | packet identity plus immutable versions/revisions/responsibilities; exact version binding, provenance, optimistic concurrency, no silent overwrite |
+| Planning tools | `PlanningTool`, immutable `PlanningToolVersion`, `PlanningToolKind`, `PlanningQuestion`, `AnswerGuidance`, `ContextInstruction`, `OutputFormat`, `PlanningToolRef`, `ToolAuthorityDecision`, `ToolLifecycleState` | native chat-composer selector, workspace-tool management, creator/version metadata | tenant-owned tool identity plus immutable versions/questions/instructions; creator and Admin mutation authority, archived-tool rules, unique org/name/version, no executable payload or model/tool grant |
+| Build Packet | `BuildPacket`, `BuildPacketVersion`, `Requirement`, `AcceptanceCriterion`, `Claim`, `Assumption`, `Unknown`, `Decision`, `Risk`, `Dependency`, `Revision`, `PlanningToolRef`, `PacketProfile`, `WorkflowSkillRef` | packet artifact/editor, readiness, review, delivery planning | packet identity plus immutable versions/revisions/responsibilities and selected tool/version; exact version binding, provenance, optimistic concurrency, no silent overwrite |
 | Source and evidence | `SourceConnection`, `SourceObject`, `Upload`, `SourceSnapshot`, `EvidenceExcerpt`, `Citation`, `Provenance`, `RetentionState`, `ProcessingState` | source-ingestion, citation, conflict, and deletion UI | source/upload/snapshot/excerpt/citation metadata plus storage object refs; tenant scope, digest/provenance, processing and retention/deletion state |
 | Repository context | `GitHubInstallationRef`, `RepositorySelection`, `RepositorySnapshot`, `RepositoryLocation`, `RepositoryEvidence`, `ContextBundle` | GitHub connection and evidence surfaces | installation/selection/exact-commit snapshot metadata; unique repository/commit identity, explicit selection, revoked access denied, derived-data retention |
 | Engineering analysis | `EngineeringAnalysisTask`, `EngineeringAnalysisResult`, `EngineeringFinding`, `FindingKind`, `Limitation`, `AnalysisStaleness` | engineering-analysis and packet-review features | version-bound tasks/results/findings; organization, packet/version, repository/commit and input/config hashes; stale bindings cannot be accepted |
 | Durable jobs | `EngineeringAnalysisJob`, `JobLease`, `JobAttempt`, `JobState`, `FailureClass`, `Cancellation`, `TerminalJobResult` | job projection and operator recovery views | jobs/leases/attempts/terminal results; legal state transitions, bounded attempts, lease ownership/expiry, one accepted terminal result |
-| Review and approval | `PacketResponsibility`, `ReviewRequest`, `RequesterApproval`, `EngineeringReview`, `ReviewDecision`, `ApprovalInvalidation`, `Waiver` | requester and engineer review features | responsibilities/requests/decisions/feedback/waivers; distinct actors, exact packet version, deterministic staleness/invalidation |
+| Review and approval | `PacketResponsibility`, `ReviewRequest`, `RequesterApproval`, `EngineeringFeedback`, `ReviewDecision`, `ApprovalInvalidation`, `Waiver` | requester approval and optional engineer-feedback features | one requester approval plus separate optional feedback/waivers; exact packet/tool version, deterministic staleness/invalidation |
 | Delivery and publication | `DeliveryPlan`, discriminated plan variants, `MilestoneProposal`, `WorkItemProposal`, `DependencyEdge`, `PublicationPreview`, `PublicationApproval`, `PublicationResult`, `ExternalRecordRef`, `IdempotencyRecord` | delivery-planning and Linear-publication features | plan versions/nodes/edges/publications/external IDs; acyclic plan, exact preview approval, idempotent mapping, partial-success reconciliation |
 | Integration lifecycle | `IntegrationConnection`, `CredentialRef`, `ResourceSelection`, `ConnectionHealth`, `OAuthState`, `Revocation`, `ReconciliationResult` | GitHub/Linear setup, selection, health, reconnect, revoke | connection metadata and credential references only; server-held secret material, state/PKCE digest, selected resources, health/revocation/reconciliation state |
 | Evaluation and audit | `EvalCase`, `EvalRun`, `GraderResult`, `TraceRef`, `AuditEvent`, `RedactionDecision`, `VersionRef` | evaluation/operator views; no private raw corpus in browser by default | fixture/run/result metadata, trace references, audit events; version provenance, privacy class, redaction decision, retention and immutable audit ordering |
@@ -265,11 +275,12 @@ except immutable global configuration explicitly justified in an ADR.
 | Identity / `domain.identity` | organizations, membership snapshots, Clerk webhook receipts | organization, user, source version/event ID | unique webhook ID; membership lookup indexes; deny-by-default tenant policy under non-owner role | reconcile out-of-order events; remove access immediately; retain minimal audit per policy | actor from org A cannot select/mutate org B; removed member fails on pooled connection reuse |
 | Billing/usage / `domain.billing` | subscription snapshots, policy versions, periods, reservations, append-only usage/cost events, price versions | organization + period/policy; provider response ID; reservation idempotency key | nonnegative integer/check constraints; unique provider/idempotency keys; org/active-period indexes; tenant RLS | immutable historical price/evidence; settle/release once; period reset and reconciliation | org A cannot read/reserve/settle org B; concurrent reservations cannot exceed one org allowance |
 | Conversation / `domain.conversation` | conversations, messages/session items, workflow runs, run events | organization + conversation/run; monotonic event cursor; mutation idempotency | one active mutating turn; unique run/cursor/idempotency; org/recent-run indexes; tenant RLS | replay cursor, terminal reconciliation, policy-governed chat deletion | org A cannot resume/stream/mutate org B; transaction-local context clears before pool reuse |
+| Planning tools / `domain.planning_tools` | tool identities, immutable versions, ordered questions, guidance/context/output declarations, creator/change audit | organization + tool + version; normalized organization/name; creator actor | unique org/name/version; immutable published version; kind/lifecycle checks; org/status/creator indexes; tenant RLS; no executable payload column | creator/Admin edit creates a new version; archive blocks new selection while existing packet refs remain readable | org A cannot discover/use/duplicate/archive org B tool; non-creator Member cannot mutate another member's tool; Admin can manage within own org only |
 | Packet / `domain.packet` | packets, immutable versions, revisions, responsibilities | organization + packet + version; base version | unique packet/version; accepted-version and responsibility indexes; tenant RLS | preserve revision lineage; stale writes fail with current version; controlled deletion | org A cannot read/patch/review org B; stale base version cannot overwrite current version |
 | Evidence / `domain.sources` | sources, uploads, snapshots, excerpts, citations, storage refs | organization + source/snapshot; digest/object version | digest/provenance constraints; org/source/status indexes; tenant RLS plus storage policy | processing recovery, retention expiry, object and derived-data deletion | org A cannot resolve metadata/object URL/content for org B; deletion removes derived access |
 | GitHub / `domain.repository_context` | installations, selections, exact-commit snapshots/evidence | organization + installation/repository/commit | unique selection and snapshot identity; org/repo/commit indexes; tenant RLS | rate-limit/reconnect; revoke denies new reads; derived snapshot retention/deletion | org A cannot use org B installation/selection/snapshot even with a guessed repository ID |
 | Analysis/jobs / `domain.analysis` | tasks, jobs, leases, attempts, results/findings | organization + job; packet/version + repository/commit + input/config hash | legal-state checks; unique accepted result; lease owner/expiry and ready-queue indexes; tenant RLS | lease reclaim, bounded retry/cancel, stale result retained but not accepted, checkout destroyed | worker/publication paths cannot cross org; expired lease holder cannot commit after reassignment |
-| Review / `domain.review` | requests, responsibilities, decisions, feedback, waivers | organization + packet/version + responsibility/actor | decision/state checks; exact-version uniqueness and pending-review indexes; tenant RLS | consequential change invalidates decisions; actor removal requires reassignment | org A actor cannot review org B; requester and engineer decisions remain distinct |
+| Review / `domain.review` | requests, responsibilities, requester approvals, optional engineering feedback, waivers | organization + packet/tool versions + responsibility/actor | decision/state checks; one exact-version requester approval; pending-feedback indexes; tenant RLS | consequential change invalidates approval and stales feedback; actor removal requires requester reassignment | org A actor cannot review org B; optional feedback cannot substitute for requester approval |
 | Delivery / `domain.delivery` | plan versions, nodes/edges, publication previews/approvals/results, external IDs | organization + plan/version; destination + idempotency key; external ID | acyclic-edge validation; unique logical publication/external mapping; pending-reconcile indexes; tenant RLS | record partial success, reconcile known IDs, retry missing writes, retain receipt | org A cannot preview/approve/reconcile org B; duplicate command cannot create another logical record |
 | Integrations / `domain.integrations` | connections, credential refs, selections, health/revocation state | organization + provider/connection/resource; OAuth state digest | unique active connection/selection; health/revoke indexes; tenant RLS; no raw secret column | reconnect/revoke and token-reference rotation; provider-specific retention | org A cannot resolve org B credential ref/resource; revoked connection cannot authorize work |
 | Evaluation/audit / `domain.evaluation` and `domain.audit` | fixture/run/grader metadata, trace refs, audit events, redaction decisions | organization/privacy class + case/run/version; audit sequence | provenance/version constraints; case/run and actor/time indexes; tenant RLS; append-only audit permissions | retain only authorized/redacted artifacts for declared period; trace by reference | private org A case/trace/audit cannot be read by org B or leak into a global benchmark |
@@ -339,6 +350,7 @@ revisit trigger; path-name convenience alone is not an exception.
 | Cursor reconnect | reconnect requests strictly after the last acknowledged cursor and converges on persisted events |
 | Terminal reconciliation | terminal event refetches the authoritative run/message; partial stream text is not retained as a second durable message |
 | Version conflict | mutation carries `base_packet_version` and idempotency key; conflict exposes current version for reload/compare/reapply without overwrite |
+| Workspace-tool selection | composer query/selection is organization scoped; archived or stale versions fail closed; a packet binds the exact accepted tool version and does not change when the tool is edited later |
 | Sensitive optimistic state | approval, usage, integration authorization, Codex completion, and publication remain pending until accepted server state arrives |
 
 ### Contract generation fixture
@@ -367,6 +379,7 @@ if a provider type appears in domain/public schema or generated client output.
 | Transaction-local context | verified actor/organization is set transaction-locally, clears on commit/rollback, and cannot survive pooled-connection reuse |
 | Tenant repository coverage | every tenant repository read/write contains an explicit organization predicate and passes both same-tenant success and cross-tenant denial under RLS |
 | Background/publication coverage | worker lease/result and publication preview/approval/reconcile paths enforce the same tenant context rather than a broader service identity |
+| Workspace-tool authority | Members can discover/use tenant tools; only the creator or an Admin can create a successor version, archive, or duplicate under the same organization; no stored field can grant executable/model/provider authority |
 | Constraint/index coverage | uniqueness, idempotency, state, nonnegative money/token, exact-version, and organization-leading access paths have an accepted constraint/index or written rationale |
 | Recovery/retention | replay/reconciliation and deletion/expiry fixtures preserve required audit while denying access to revoked or expired derived data |
 
