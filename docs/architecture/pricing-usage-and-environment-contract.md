@@ -21,10 +21,11 @@ The public pricing surface is deliberately short:
 | Pro | **$60/month** | Exactly the same released capabilities as Starter with **3× monthly usage** |
 | Enterprise | **Contact us** | Custom usage capacity plus agreed security, governance, onboarding, and support requirements |
 
-Starter and Pro do not differ by features. V1 does not plan-gate Packet
-Templates, approval workflows, Codex, repositories, or connectors. The MVP has
-one default Packet Template and one fixed approval contract. Every released AI
-capability consumes the same organization allowance.
+Starter and Pro do not differ by features. V1 does not plan-gate built-in
+templates, tenant-scoped custom forms/tools, Codex, repositories, or
+connectors. The MVP uses one fixed requester-approval contract and defers
+configurable multi-person approval policy. Every released AI capability
+consumes the same organization allowance.
 
 Customer-facing copy may show only:
 
