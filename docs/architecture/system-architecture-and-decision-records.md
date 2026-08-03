@@ -15,8 +15,8 @@ accepted.
 
 ## Accepted V1 boundary
 
-- React/TypeScript provides chat, packet, review, usage-status, and publication
-  surfaces.
+- React/TypeScript provides chat with native built-in/workspace-tool selection,
+  a right-side packet artifact, review, usage-status, and publication surfaces.
 - FastAPI/Pydantic is the API/control plane; deterministic application and
   domain services own authorization, transitions, persistence, and effects.
 - Clerk is the only user/organization identity authority. Clerk Billing owns
@@ -29,16 +29,22 @@ accepted.
 - One Clio Planning Agent uses the OpenAI Agents SDK, three bounded read tools,
   and typed `PlanningTurnResult`. A custom Postgres-backed Agents SDK `Session`
   is the only planning-conversation continuation strategy.
+- Built-in templates and tenant-scoped workspace tools are versioned,
+  declarative question/guidance/context/output contracts. They grant no
+  executable behavior. Members may discover/use them; creators and Admins own
+  changes; packets retain the exact selected version.
 - A least-privilege GitHub App supplies explicitly selected, on-demand,
   commit-pinned repository snapshots.
 - One Postgres-backed leased `EngineeringAnalysisJob` worker invokes Codex CLI
   as a private MCP server in an isolated read-only, no-network, no-application-
   secrets boundary. It returns typed, packet/commit-version-bound
   `EngineeringAnalysisResult` evidence.
-- Requester approval and human engineering review are distinct, version-bound
-  decisions. Codex is advisory and cannot approve.
-- Linear publication uses OAuth, destination selection, preview, explicit
-  approval, idempotency, and partial-success reconciliation.
+- One requester approval of the exact packet and publication preview is the V1
+  publication authority. Human engineering feedback is optional, remains
+  version-bound, and never transfers implementation authority. Codex is
+  advisory and cannot approve.
+- Linear publication uses OAuth, destination selection, exact preview,
+  requester approval, idempotency, and partial-success reconciliation.
 - External Clio MCP and direct conversation connectors are not V1 critical-path
   dependencies.
 
@@ -54,7 +60,7 @@ flowchart LR
     GH["GitHub App and commit snapshot"]
     J["Leased EngineeringAnalysisJob"]
     CX["Isolated Codex CLI MCP"]
-    HR["Requester and human engineering review"]
+    HR["Requester approval and optional engineering feedback"]
     LI["Linear OAuth publisher"]
 
     UI -->|"typed HTTP/SSE"| API
@@ -68,7 +74,7 @@ flowchart LR
     CX -->|"typed cited analysis"| J
     J -->|"validated version-bound evidence"| API
     API -->|"exact packet version"| HR
-    HR -->|"accepted delivery plan plus approval"| API
+    HR -->|"requester-approved exact packet and preview"| API
     API -->|"preview then idempotent write"| LI
 ```
 
@@ -81,17 +87,19 @@ leases, records approvals, holds credentials, and commits external effects.
 
 ```mermaid
 flowchart LR
-    SRC["Authorized paste, upload, or selected repository"]
+    SRC["Authorized paste, upload, selected repository, or workspace tool"]
+    WT["Versioned declarative workspace tool"]
     EV["Versioned evidence and provenance"]
     CL["Fact, inference, assumption, unknown, or conflict"]
     PV["Immutable Build Packet version"]
     AC["Requirements and acceptance criteria"]
     EA["EngineeringAnalysisResult at packet plus commit"]
-    RV["Requester and engineer decisions"]
+    RV["Requester approval and optional engineer feedback"]
     DP["Destination-neutral delivery plan"]
     EX["Linear records and external IDs"]
     VE["Verification evidence"]
 
+    WT -->|"guides questions/output; no executable authority"| SRC
     SRC -->|"captured as"| EV
     EV -->|"supports/conflicts with"| CL
     CL -->|"shapes"| PV
@@ -168,11 +176,13 @@ stateDiagram-v2
     EngineeringAnalysis --> ReadinessReview: failed or stale
     EngineeringAnalysis --> RequesterReview: current typed result
     RequesterReview --> Discovering: requester changes
-    RequesterReview --> HumanEngineeringReview: requester approves exact version
-    HumanEngineeringReview --> Discovering: engineer requests changes
-    HumanEngineeringReview --> DeliveryPlanning: engineer accepts readiness
+    RequesterReview --> EngineeringFeedback: requester asks for engineer input
+    EngineeringFeedback --> Discovering: feedback causes changes
+    EngineeringFeedback --> RequesterReview: feedback recorded
+    RequesterReview --> DeliveryPlanning: requester approves exact version
     DeliveryPlanning --> ReadyToPublish: plan accepted
-    ReadyToPublish --> Publishing: publisher approves exact preview
+    ReadyToPublish --> RequesterReview: preview changes intent or scope
+    ReadyToPublish --> Publishing: requester approves exact preview
     Publishing --> Published: external writes reconciled
     Publishing --> PublishFailed: partial or recoverable failure
     PublishFailed --> Publishing: idempotent reconciliation
@@ -194,7 +204,8 @@ stateDiagram-v2
 ```
 
 A model may propose typed output; domain code alone applies these transitions.
-A Codex result and a human approval are separate claims.
+A Codex result, optional engineering feedback, and requester approval are
+separate claims.
 
 ## Usage control graph
 
@@ -233,10 +244,11 @@ call is permitted. **M0 makes no provider call.**
 | --- | --- | --- | --- | --- | --- |
 | Clerk actor/organization | Sign up/login, create org or accept invite, choose active org | Create first packet under backend-verified membership | Expired session and out-of-order webhook reconciliation | Remove member or delete org; deny access immediately | Identity/audit references per accepted policy; delete tenant content through controlled workflow |
 | Subscription/shared usage | Organization checkout and signed snapshot | Resolve allowance, reserve, execute, settle | Webhook replay, denial on exhaustion, release/settle recovery, immediate upgrade/end-cycle downgrade | Cancel subscription; keep permitted reads/exports | Immutable price/usage evidence and billing audit for declared period |
+| Workspace tools | Member selects a built-in tool or creates a tenant-scoped declarative form | Ask declared questions while retaining freeform chat; bind exact version to packet | Invalid/stale tool version fails closed; reload or duplicate current version | Creator/Admin archives; existing packets retain immutable version reference | Creator/change/version audit retained with packet provenance |
 | GitHub | Admin installs app and explicitly selects repository | Resolve one on-demand exact-commit snapshot | Rate-limit/health error, reconnect, rerun stale snapshot | Revoke installation/selection; deny new reads | Derived snapshot/evidence expires or deletes per source policy |
 | Engineering job/Codex | Packet and selected commit pass readiness; enqueue immutable task | Valid typed cited result reaches packet review | Lease reclaim, bounded retry, cancel, stale/rerun, safe terminal failure | Revoke repository access; cancel queued/leased work where legal | Task/result/trace references retained by policy; checkout destroyed |
-| Human review | Assign requester and engineer to exact packet version | Record separate version-bound decisions | Changes invalidate approval and return to discovery | Remove responsibility/actor access; require reassignment | Decision, feedback, invalidation, and waiver audit retained |
-| Linear | Authorized publisher completes OAuth and chooses destination | Preview and publish approved plan exactly once | Rate limit/reconnect and partial-success reconciliation | Revoke OAuth; block new writes while preserving external IDs | Publication receipts, IDs, approval, and reconciliation audit retained |
+| Review | Assign requester; optionally request engineer feedback on an exact packet version | Record one requester approval plus any separate feedback | Consequential changes invalidate approval and stale prior feedback | Remove responsibility/actor access; require requester reassignment | Approval, feedback, invalidation, and waiver audit retained |
+| Linear | Authorized requester/publisher completes OAuth and chooses destination | Approve exact preview and publish approved plan exactly once | Rate limit/reconnect and partial-success reconciliation | Revoke OAuth; block new writes while preserving external IDs | Publication receipts, IDs, approval, and reconciliation audit retained |
 
 ## Trust-boundary contract
 
@@ -247,7 +259,7 @@ call is permitted. **M0 makes no provider call.**
 | FastAPI → Planning agent | Deterministic control plane | Minimal context, allowed tools, typed final output schema, budget/stop rule | prompt/skill/model/schema versions, tool spans, redaction decision | Reject invalid output; no partial mutation | Bounded retry or ask/escalate without duplicate patch | Trace/result references under eval/privacy policy |
 | GitHub → snapshot | App installation plus explicit repository selection | State verification, installation/repository identity, exact commit | install/selection/commit/source locations | No fallback to broader access or moving branch head | Reconnect/reselect/rerun at a resolved commit | Derived data follows source retention/deletion |
 | Worker → Codex MCP | Immutable EngineeringAnalysisTask and valid lease | Read-only checkout, allowlisted input/output schema, budget/timeout | task/lease/attempt/config versions and cited result | No write, network, approval, publish, or secret access; terminate safely | Reclaim/retry/cancel by classified job state | Destroy checkout; retain redacted result/trace references by policy |
-| FastAPI → Linear | Authorized publisher plus exact preview/approval | OAuth state/PKCE, destination IDs, packet/plan version, idempotency key | preview, approval, requests, responses, external IDs | Stop on unsafe/unknown state; record partial success | Reconcile known IDs then retry missing writes | Publication and reconciliation receipt per policy |
+| FastAPI → Linear | Authorized requester/publisher plus exact packet and preview approval | OAuth state/PKCE, destination IDs, packet/plan/tool versions, idempotency key | preview, approval, requests, responses, external IDs | Stop on unsafe/unknown state; record partial success | Reconcile known IDs then retry missing writes | Publication and reconciliation receipt per policy |
 
 No model chooses its tenant, receives a provider credential, grants approval,
 or directly performs a consequential external write.
@@ -314,10 +326,11 @@ or directly performs a consequential external write.
 
 - **Decision:** keep delivery planning destination-neutral; publish through a
   deterministic Linear OAuth adapter only after destination selection, exact
-  preview, explicit approval, and idempotency setup.
+  preview, one requester approval, and idempotency setup.
 - **Reason:** a model must not repair or guess consequential external state.
 - **Constraint:** partial success records external IDs and reconciles before
-  retry; requester/engineer decisions remain distinct from publish authority.
+  retry; optional engineering feedback cannot substitute for or block the
+  requester's exact packet/preview approval.
 - **Revisit when:** another destination is accepted through its own adapter
   contract without weakening preview, approval, traceability, or recovery.
 
@@ -331,7 +344,7 @@ or directly performs a consequential external write.
 | Chat/stream/approval recovery | state-machine and ordered/deduplicated stream tests | event cursor, terminal reconciliation, invalidation result |
 | GitHub snapshot provenance | adapter tests with selected repository/exact commit/revoke | installation/selection/commit and citation-resolution result |
 | Job and Codex isolation | lease-death/cancel/retry tests plus sandbox contract tests | task/attempt/config/result versions and redacted trace reference |
-| Human review separation | workflow transition and staleness tests | exact packet version plus requester/engineer decision records |
+| Review authority separation | workflow transition and staleness tests | exact packet/tool versions, requester approval, and separate optional engineering feedback |
 | Linear safety | OAuth state, preview, idempotency, partial-reconciliation tests | approval, idempotency record, external IDs, reconciliation receipt |
 | M0–M8 order | machine topological-sort check over the edge registry below | node/edge count and acyclic result |
 
@@ -351,7 +364,7 @@ flowchart LR
     M3 --> M4
     M3 --> M5["M5 Codex specialist"]
     M4 --> M5
-    M5 --> M6["M6 human review and delivery plan"]
+    M5 --> M6["M6 requester review, optional engineering feedback, and delivery plan"]
     M6 --> M7["M7 Linear publication"]
     M7 --> M8["M8 pilot/connector decision"]
 ```
