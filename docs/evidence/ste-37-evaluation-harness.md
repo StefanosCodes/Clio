@@ -4,7 +4,7 @@ Date: 2026-08-03
 Status: harness and provider schedule frozen before paired execution
 Interpretation: M1 walking-skeleton evidence only; no production-model decision
 
-## Frozen inputs
+## Frozen inputs — v1
 
 - Dataset: `clio-m0-seed@1.0.0`
 - Manifest SHA-256: `d5cc1f711735fa65148134487e7bb3bfcc80bcba572a0e75271f62bbb85f2cab`
@@ -17,14 +17,29 @@ Interpretation: M1 walking-skeleton evidence only; no production-model decision
 
 The exact committed harness SHA is recorded in the pre-dispatch Linear receipt and in the paired report at execution. Dispatch refuses a dirty worktree, so source or schedule changes require a new committed harness and new preregistration.
 
+### v1 provider-run invalidation
+
+The first provider dispatch exposed that the 512-output-token cap was too small for the pinned structured response. One schedule item completed, four returned provider `response.incomplete` / `max_output_tokens`, and a sixth in-flight call was interrupted when the run was stopped. Agents SDK streaming generator cleanup also emitted secondary context-cleanup warnings after incomplete responses. These are harness-invalid observations, not model failures and not passing comparison evidence.
+
+The five checkpointed items remain in `artifacts/evals/ste37_invalid_attempts_v1.json` (SHA-256 `0af048dcdf5beb35fd22ff6bcb04cc6dbf227cd3330f9ddcb00771fd15acf976`). No invalid result is converted to pass or included in the v2 aggregate.
+
+The corrective v2 preregistration keeps the same cases, models, reasoning, service tier, repeats, and randomized-order rule while setting low verbosity and a 1,024-token output cap. Its separately committed source/schedule digests and budgets are recorded before the v2 dispatch.
+
+- v2 preregistration internal SHA-256: `6a4ba29486166277f10abbbc6249ab43db516016189a4938a2469844c506f050`
+- v2 randomized schedule SHA-256: `7c4f615221aee7be2102cbd662c58ca56a429d2d02c15a1a0a0a7aae0ac304e6`
+- v2 harness source SHA-256: `33316016d7f40cfaa8c05ad7768f2046ed2962e91876be4e9232f7389be3802a`
+- v2 prompt: `clio-planning-eval-prompt@1.0.1`
+
 ## Configurations and budget
 
 | Role | Model | Reasoning | Tier | Output cap | Timeout | Attempts | Per-call max |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: |
-| baseline | `gpt-5.6-terra` | low | default/standard | 512 | 45 s | 1 | 10,000 micro-USD |
-| candidate | `gpt-5.6-sol` | low | default/standard | 512 | 45 s | 1 | 20,000 micro-USD |
+| baseline v1 | `gpt-5.6-terra` | low | default/standard | 512 | 45 s | 1 | 10,000 micro-USD |
+| candidate v1 | `gpt-5.6-sol` | low | default/standard | 512 | 45 s | 1 | 20,000 micro-USD |
+| baseline v2 | `gpt-5.6-terra` | low / low verbosity | default/standard | 1,024 | 45 s | 1 | 15,000 micro-USD |
+| candidate v2 | `gpt-5.6-sol` | low / low verbosity | default/standard | 1,024 | 45 s | 1 | 40,000 micro-USD |
 
-The total ceiling is 360,000 micro-USD ($0.36). The runner disables transport retries and fallback models. Its conservative 900-input-token preflight must pass before dispatch.
+The v1 total ceiling was 360,000 micro-USD ($0.36). Stopping after at most four baseline and two candidate dispatches limited its maximum exposure to 80,000 micro-USD ($0.08), including the uncheckpointed interrupted call. The v2 ceiling is 600,000 micro-USD ($0.60), making the cumulative milestone ceiling 680,000 micro-USD ($0.68). The runner disables transport retries and fallback models. Its conservative 900-input-token preflight must pass before dispatch.
 
 The price policy is `openai-standard-2026-08-03`: terra uses $2/M input, $0.20/M cached input, $2.50/M cache write, and $12/M output; sol uses $5/M input, $0.50/M cached input, $6.25/M cache write, and $30/M output.
 

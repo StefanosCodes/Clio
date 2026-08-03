@@ -76,26 +76,31 @@ def test_synthetic_job_fixture_represents_but_does_not_claim_recovery() -> None:
 
 
 def test_preregistration_freezes_same_case_randomized_schedule_and_budgets() -> None:
-    preregistration = json.loads(
-        (REPOSITORY / "tests/evals/ste37_preregistration.json").read_text()
-    )
-    schedule = preregistration["schedule"]
-    assert len(schedule) == 24
-    assert len({item["schedule_id"] for item in schedule}) == 24
-    counts: dict[tuple[str, str], int] = {}
-    for item in schedule:
-        key = (item["configuration_id"], item["case_id"])
-        counts[key] = counts.get(key, 0) + 1
-    assert set(counts.values()) == {3}
-    schedule_hash = hashlib.sha256(
-        json.dumps(schedule, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
-    assert schedule_hash == preregistration["schedule_sha256"]
-    unhashed = dict(preregistration)
-    expected = unhashed.pop("preregistration_sha256")
-    actual = hashlib.sha256(
-        json.dumps(unhashed, sort_keys=True, separators=(",", ":")).encode()
-    ).hexdigest()
-    assert actual == expected
-    assert preregistration["budget"]["total_max_cost_microusd"] == 360_000
-    assert preregistration["report_contract"]["production_selection_allowed"] is False
+    registrations = [
+        json.loads((REPOSITORY / "tests/evals/ste37_preregistration.json").read_text()),
+        json.loads((REPOSITORY / "tests/evals/ste37_preregistration_v2.json").read_text()),
+    ]
+    for preregistration in registrations:
+        schedule = preregistration["schedule"]
+        assert len(schedule) == 24
+        assert len({item["schedule_id"] for item in schedule}) == 24
+        counts: dict[tuple[str, str], int] = {}
+        for item in schedule:
+            key = (item["configuration_id"], item["case_id"])
+            counts[key] = counts.get(key, 0) + 1
+        assert set(counts.values()) == {3}
+        schedule_hash = hashlib.sha256(
+            json.dumps(schedule, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        assert schedule_hash == preregistration["schedule_sha256"]
+        unhashed = dict(preregistration)
+        expected = unhashed.pop("preregistration_sha256")
+        actual = hashlib.sha256(
+            json.dumps(unhashed, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        assert actual == expected
+        assert preregistration["report_contract"]["production_selection_allowed"] is False
+    assert registrations[0]["budget"]["total_max_cost_microusd"] == 360_000
+    assert registrations[1]["budget"]["total_max_cost_microusd"] == 600_000
+    assert registrations[1]["budget"]["cumulative_milestone_ceiling_microusd"] == 680_000
+    assert {item["max_output_tokens"] for item in registrations[1]["configurations"]} == {1024}

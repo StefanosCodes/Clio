@@ -9,7 +9,7 @@ from typing import Any
 
 REPOSITORY = Path(__file__).parents[3]
 MANIFEST_PATH = REPOSITORY / "tests" / "evals" / "m0_seed_cases.json"
-OUTPUT_PATH = REPOSITORY / "tests" / "evals" / "ste37_preregistration.json"
+OUTPUT_PATH = REPOSITORY / "tests" / "evals" / "ste37_preregistration_v2.json"
 SELECTED_CASES = {"CLIO-M0-001", "CLIO-M0-002", "CLIO-M0-003", "CLIO-M0-010"}
 
 
@@ -46,30 +46,32 @@ def main() -> None:
     cases = [case for case in manifest["cases"] if case["case_id"] in SELECTED_CASES]
     configurations = [
         {
-            "configuration_id": "baseline-terra-low-default",
+            "configuration_id": "baseline-terra-low-default-v2",
             "role": "baseline",
             "provider": "openai",
             "requested_model": "gpt-5.6-terra",
             "reasoning": "low",
             "service_tier": "default",
-            "max_output_tokens": 512,
+            "verbosity": "low",
+            "max_output_tokens": 1024,
             "timeout_seconds": 45,
             "attempts": 1,
             "transport_retries": 0,
-            "max_cost_microusd": 10_000,
+            "max_cost_microusd": 15_000,
         },
         {
-            "configuration_id": "candidate-sol-low-default",
+            "configuration_id": "candidate-sol-low-default-v2",
             "role": "candidate",
             "provider": "openai",
             "requested_model": "gpt-5.6-sol",
             "reasoning": "low",
             "service_tier": "default",
-            "max_output_tokens": 512,
+            "verbosity": "low",
+            "max_output_tokens": 1024,
             "timeout_seconds": 45,
             "attempts": 1,
             "transport_retries": 0,
-            "max_cost_microusd": 20_000,
+            "max_cost_microusd": 40_000,
         },
     ]
     schedule = [
@@ -92,7 +94,7 @@ def main() -> None:
         capture_output=True,
     ).stdout.strip()
     payload: dict[str, Any] = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.0.1",
         "ticket": "STE-37",
         "created_at": "2026-08-03",
         "dataset": {
@@ -107,7 +109,7 @@ def main() -> None:
             "source_sha256": source_digest(),
             "dispatch_requires_clean_committed_head": True,
             "agents_sdk": "0.19.0",
-            "prompt_version": "clio-planning-eval-prompt@1.0.0",
+            "prompt_version": "clio-planning-eval-prompt@1.0.1",
             "schema_version": "clio-planning-eval-output@1.0.0",
             "planning_tool_version": "bounded-planning-tool@1.0.0",
             "guardrail_version": "secret-and-private-content@1.0.0",
@@ -129,7 +131,9 @@ def main() -> None:
             "schedule_seed": 3701,
             "repeat_count_per_configuration_case": 3,
             "call_count": 24,
-            "total_max_cost_microusd": 360_000,
+            "total_max_cost_microusd": 600_000,
+            "prior_invalid_attempt_max_exposure_microusd": 80_000,
+            "cumulative_milestone_ceiling_microusd": 680_000,
             "price_version": "openai-standard-2026-08-03",
             "conservative_input_tokens_per_call": 900,
         },
@@ -144,6 +148,7 @@ def main() -> None:
             "human_release_authority": "required_but_absent_in_m1",
             "production_selection_allowed": False,
             "real_codex_or_job_execution_allowed": False,
+            "v1_invalid_attempts_retained": "artifacts/evals/ste37_invalid_attempts_v1.json",
         },
     }
     payload["schedule_sha256"] = sha256(schedule)
