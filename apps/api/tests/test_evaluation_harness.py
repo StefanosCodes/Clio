@@ -104,3 +104,40 @@ def test_preregistration_freezes_same_case_randomized_schedule_and_budgets() -> 
     assert registrations[1]["budget"]["total_max_cost_microusd"] == 600_000
     assert registrations[1]["budget"]["cumulative_milestone_ceiling_microusd"] == 680_000
     assert {item["max_output_tokens"] for item in registrations[1]["configurations"]} == {1024}
+
+
+def test_paired_report_preserves_truthful_non_selection_contract() -> None:
+    report_path = REPOSITORY / "artifacts/evals/ste37_paired_comparison.json"
+    if not report_path.exists():
+        pytest.skip("paired provider report has not been executed")
+    report = json.loads(report_path.read_text())
+    assert len(report["runs"]) == 24
+    assert {run["terminal_status"] for run in report["runs"]} == {"completed"}
+    assert all(
+        run["attempt_count"] == 1 and run["retry_count"] == 0
+        for run in report["runs"]
+    )
+    assert all(run["inside_budget"] for run in report["runs"])
+    assert len({run["output_sha256"] for run in report["runs"]}) == 24
+    assert len({run["trace_id"] for run in report["runs"]}) == 24
+    assert all(run["first_token_latency_ms"] is not None for run in report["runs"])
+    assert all(
+        run["repository_commit"] == report["harness"]["commit"]
+        for run in report["runs"]
+    )
+    assert all(
+        gate["status"] != "fail"
+        for run in report["runs"]
+        for gate in run["hard_gates"]
+    )
+    assert (
+        report["aggregate"]["decision"]
+        == "no_production_selection_human_adjudication_required"
+    )
+    assert report["human_adjudication"] is None
+    assert report["release_authority"] == "absent"
+    assert all(
+        configuration["production_selection_eligible"] is False
+        for configuration in report["aggregate"]["configurations"]
+    )
+    assert report["invalid_predecessor_evidence"]["included_in_aggregate"] is False

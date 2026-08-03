@@ -31,6 +31,9 @@ still later ticket-gated work.
 - [STE-8 application-shell evidence](docs/evidence/ste-8-application-shell.md) —
   direct-Postgres, generated-contract, browser acceptance, and bounded provider
   smoke evidence with explicit M2 boundaries.
+- [STE-37 evaluation evidence](docs/evidence/ste-37-evaluation-harness.md) —
+  frozen schedules, privacy-aware traces, deterministic fixtures, paired
+  provider observations, and the explicit no-selection result.
 
 ## Run the M1 shell locally
 
@@ -64,11 +67,13 @@ status alone do not prove implementation.
 
 M0 merged through [PR #1](https://github.com/StefanosCodes/Clio/pull/1) at
 `2021f29c6a6f046e19ad44ec8aeac2ebb31fdc0d`. M1 executes serially as
-STE-7 → STE-8 → STE-37 on one grouped draft pull request. The first real
-bounded model smoke belongs to STE-8 and the first reproducible paired planning
-comparison belongs to STE-37. The completed M1 draft requires user inspection
-and explicit merge authorization; this repository never treats a draft,
-historical Rivet evidence, or synthetic event as permission to merge.
+STE-7 → STE-8 → STE-37 on one grouped draft pull request. All three ticket
+gates now have committed evidence. STE-8 contains the first bounded model smoke;
+STE-37 contains the first reproducible paired planning comparison and records
+`no_production_selection_human_adjudication_required`. The completed M1 draft
+requires user inspection and explicit merge authorization; this repository
+never treats a draft, historical Rivet evidence, synthetic event, or provisional
+evaluation result as permission to merge.
 
 ## V1 boundary
 

@@ -1,7 +1,7 @@
 # STE-37 trace and evaluation harness
 
 Date: 2026-08-03
-Status: harness and provider schedule frozen before paired execution
+Status: paired v2 execution complete; human adjudication absent
 Interpretation: M1 walking-skeleton evidence only; no production-model decision
 
 ## Frozen inputs — v1
@@ -16,6 +16,8 @@ Interpretation: M1 walking-skeleton evidence only; no production-model decision
 - Repeats: three per configuration/case; 24 calls total
 
 The exact committed harness SHA is recorded in the pre-dispatch Linear receipt and in the paired report at execution. Dispatch refuses a dirty worktree, so source or schedule changes require a new committed harness and new preregistration.
+
+The v1 harness was committed at `21e05824f634e9c2e8a1538f66be303ba63e3972`. The corrective v2 harness was committed before dispatch at `adf62c8fbd3807e888467c63458c6a45e996738a`.
 
 ### v1 provider-run invalidation
 
@@ -77,11 +79,41 @@ Deterministic hard gates run first. Rubric scores are explicitly provisional heu
 
 The paired report must show per-run/aggregate hard gates, provisional quality, latency, normalized tokens/cost, failures, and a provisional Pareto view. It must set production selection to false because the four-case M1 slice, calibrated human reviewers, and named product/engineering release decision are absent.
 
+## Paired v2 result
+
+The frozen v2 schedule completed all 24 calls: 12 baseline `gpt-5.6-terra` and 12 candidate `gpt-5.6-sol` observations, three repeats per configuration/case. Every observation used the requested default service tier, completed in one attempt with no transport retry, retained first-token latency and hashed request/response identifiers, remained inside its per-call budget, and passed every applicable deterministic hard gate. All 24 retained output hashes are distinct.
+
+| Metric | Baseline terra | Candidate sol |
+| --- | ---: | ---: |
+| Completed / scheduled | 12 / 12 | 12 / 12 |
+| Applicable hard-gate pass rate | 100% | 100% |
+| Median first-token latency | 934 ms | 1,712 ms |
+| Median total latency | 3,588 ms | 5,764 ms |
+| Maximum total latency | 4,307 ms | 12,133 ms |
+| Input / output / reasoning tokens | 7,035 / 3,608 / 0 | 7,035 / 4,055 / 877 |
+| Observed cost | 57,366 micro-USD | 156,825 micro-USD |
+
+Total observed v2 cost was 214,191 micro-USD ($0.214191), below the 600,000-micro-USD v2 ceiling. The maximum single-call cost was 21,540 micro-USD, below its frozen configuration limit.
+
+The baseline provisional rubric means were assumption visibility 3, delivery traceability 2, groundedness/citation 3, question usefulness 3, readiness quality 3, and response efficiency 2. The candidate means were identical except question usefulness at 2.667. This is not a production-quality conclusion: two candidate case-010 repeats received a score of 1 because the frozen heuristic expects a question while that case contract does not require one. The mismatch is preserved, disclosed, and left for human adjudication rather than silently regraded.
+
+The report decision is `no_production_selection_human_adjudication_required`. Product and engineering reviewers are null, human adjudication is null, release authority is absent, and both configurations have `production_selection_eligible=false`. The Pareto view is provisional only.
+
+### Retained evidence
+
+- Final paired report: `artifacts/evals/ste37_paired_comparison.json`, SHA-256 `02a5b67677562d38f760d8c2ff8f5d741bf34f972c6307e7e480687405a9cd33`
+- Provider trace set: `artifacts/evals/ste37_provider_traces.json`, SHA-256 `91ce366edbe8df99fb3785ea71ff889977bd2853b5b6aff0791e369ef6d2b18e`
+- Immutable v2 checkpoint: `artifacts/evals/ste37_paired_checkpoint_v2.json`, SHA-256 `1897bf1c69c9d236f3db47623814d58bcbbaf77af10d7fe35f4d8a03cbfe82f7`
+- Excluded v1 invalid attempts: `artifacts/evals/ste37_invalid_attempts_v1.json`, SHA-256 `0af048dcdf5beb35fd22ff6bcb04cc6dbf227cd3330f9ddcb00771fd15acf976`
+
+The provider trace set contains 24 local traces with `agent`, `custom`, and normalized-usage `response` spans. Raw provider request/response bodies, prompts, outputs, credentials, and secret-like patterns are not retained. The excluded v1 evidence is referenced by the final report with `included_in_aggregate=false`.
+
 ## Commands
 
 ```text
 PYTHONPATH=apps/api/src apps/api/.venv/bin/python apps/api/scripts/run_deterministic_eval.py
 PYTHONPATH=apps/api/src apps/api/.venv/bin/python apps/api/scripts/generate_ste37_preregistration.py
+PYTHONPATH=apps/api/src apps/api/.venv/bin/python apps/api/scripts/finalize_ste37_report.py
 cd apps/api && .venv/bin/pytest -q -m 'not postgres and not provider'
 ```
 

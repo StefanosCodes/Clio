@@ -305,6 +305,12 @@ def aggregate(runs: list[dict[str, Any]], preregistration: dict[str, Any]) -> di
             "provisional_rubric_means": {
                 key: round(statistics.mean(values), 3) for key, values in sorted(rubric_values.items())
             },
+            "provisional_rubric_distributions": {
+                key: {
+                    str(score): values.count(score) for score in sorted(set(values))
+                }
+                for key, values in sorted(rubric_values.items())
+            },
             "median_first_token_latency_ms": round(statistics.median(first_tokens)) if first_tokens else None,
             "median_total_latency_ms": round(statistics.median(latencies)) if latencies else None,
             "maximum_total_latency_ms": max(latencies) if latencies else None,
@@ -320,12 +326,60 @@ def aggregate(runs: list[dict[str, Any]], preregistration: dict[str, Any]) -> di
                 )
             },
             "total_cost_microusd": sum(run["cost_microusd"] for run in completed),
+            "actual_models": sorted({run["actual_model"] for run in completed}),
+            "actual_service_tiers": sorted(
+                {run["actual_service_tier"] for run in completed}
+            ),
             "human_review_complete": False,
             "production_selection_eligible": False,
         }
         aggregates.append(aggregate_record)
+    per_case = []
+    for configuration in preregistration["configurations"]:
+        for case_id in preregistration["dataset"]["selected_case_ids"]:
+            selected = [
+                run
+                for run in runs
+                if run["configuration_id"] == configuration["configuration_id"]
+                and run["case_id"] == case_id
+                and run["terminal_status"] == "completed"
+            ]
+            values = [
+                score["provisional_score"]
+                for run in selected
+                for score in run["rubric"]
+                if score["provisional_score"] is not None
+            ]
+            applicable = [
+                gate
+                for run in selected
+                for gate in run["hard_gates"]
+                if gate["status"] != "not_applicable"
+            ]
+            per_case.append(
+                {
+                    "configuration_id": configuration["configuration_id"],
+                    "case_id": case_id,
+                    "completed_repeats": len(selected),
+                    "all_applicable_hard_gates_pass": all(
+                        gate["status"] == "pass" for gate in applicable
+                    ),
+                    "provisional_quality_mean": (
+                        round(statistics.mean(values), 3) if values else None
+                    ),
+                    "median_total_latency_ms": (
+                        round(statistics.median(run["total_latency_ms"] for run in selected))
+                        if selected
+                        else None
+                    ),
+                    "total_cost_microusd": sum(
+                        run["cost_microusd"] for run in selected
+                    ),
+                }
+            )
     return {
         "configurations": aggregates,
+        "per_case": per_case,
         "pareto_frontier": {
             "status": "provisional_only",
             "configuration_ids": [item["configuration_id"] for item in aggregates],
