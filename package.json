@@ -1,0 +1,22 @@
+{
+  "name": "clio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/web",
+    "packages/api-client"
+  ],
+  "scripts": {
+    "build": "npm --workspace @clio/web run build",
+    "check": "npm --workspace @clio/web run check",
+    "test": "npm --workspace @clio/web run test",
+    "verify": "npm run check && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "supabase": "2.110.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

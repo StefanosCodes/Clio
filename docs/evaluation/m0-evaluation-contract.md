@@ -227,11 +227,13 @@ derived artifacts according to the source policy while retaining only the
 minimal non-sensitive audit receipt required to prove deletion. Training reuse
 is not implied by evaluation authorization.
 
-## Final pre-merge human review evidence
+## Historical M0 human review template
 
-This is the final review requested for the completed grouped draft PR. Empty or
-`Pending` cells are not evidence and do not block assembling the draft; they do
-block merge and M1 entry.
+This was the final review requested for the completed grouped M0 draft PR.
+Empty or `Pending` cells are not evidence and remain visible as the honest
+historical record. PR #1 was subsequently merged by the repository owner and
+the explicitly launched M1 goal accepts that merge as current entry authority;
+neither action fabricates or retroactively completes these review slots.
 
 | Slot | Reviewer | Exact PR head SHA | Completed at | Verdict | Evidence link |
 | --- | --- | --- | --- | --- | --- |
@@ -248,10 +250,12 @@ missing implementation context, unresolved decisions, architecture/authority
 concerns, time-to-understand, whether repository/Codex evidence would materially
 change readiness, and merge-blocking changes.
 
-Evidence is sufficient only when five distinct reviewers evaluated the same
-exact PR head, their raw forms/notes are linked, blocking feedback is resolved
-or explicitly accepted by the authorized humans, and the final merge approver
-records a decision. This document does not claim that review has occurred.
+The original review template would have been sufficient only when five distinct
+reviewers evaluated the same exact PR head, their raw forms/notes were linked,
+blocking feedback was resolved or explicitly accepted by the authorized
+humans, and the final merge approver recorded a decision. This document does
+not claim that review occurred. STE-7 reconciles PR #1's stale pre-merge text
+and retains this limitation rather than rewriting history.
 
 ## Authoritative references
 

@@ -151,6 +151,8 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
 .envrc
 .venv
 env/
@@ -158,6 +160,16 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Node / frontend build output
+node_modules/
+*.tsbuildinfo
+apps/web/dist/
+packages/api-client/dist/
+
+# Local Supabase state
+supabase/.branches/
+supabase/.temp/
 
 # Spyder project settings
 .spyderproject

@@ -4,9 +4,11 @@ Clio is a planned multi-tenant AI planning platform that turns an unclear
 business request into a versioned, evidence-backed Build Packet and, after
 explicit requester approval, a reviewed delivery structure in Linear.
 
-This repository currently contains Clio's product, architecture, and evaluation
-contracts. It does not yet contain a verified Clio application. Planned
-capabilities are not implemented behavior.
+This repository contains Clio's product, architecture, and evaluation
+contracts plus the bounded M1 Rivet-derived application foundation. The
+foundation boots and its deterministic stream/reconnect checks pass; the
+product shell, durable database path, provider smoke, and evaluation evidence
+remain ticket-gated M1 work. Planned capabilities are not implemented behavior.
 
 ## Start here
 
@@ -39,11 +41,13 @@ status alone do not prove implementation.
 
 ## Current delivery gate
 
-M0 is assembled in a grouped draft pull request. Before it may merge or M1 may
-start, three target requesters and two engineers must review the same exact
-final PR head, and the findings must be recorded in Linear. Any later commit
-invalidates review tied to an older head. The first real baseline-versus-
-candidate model run belongs to STE-37 in M1, after this gate passes.
+M0 merged through [PR #1](https://github.com/StefanosCodes/Clio/pull/1) at
+`2021f29c6a6f046e19ad44ec8aeac2ebb31fdc0d`. M1 executes serially as
+STE-7 → STE-8 → STE-37 on one grouped draft pull request. The first real
+bounded model smoke belongs to STE-8 and the first reproducible paired planning
+comparison belongs to STE-37. The completed M1 draft requires user inspection
+and explicit merge authorization; this repository never treats a draft,
+historical Rivet evidence, or synthetic event as permission to merge.
 
 ## V1 boundary
 
