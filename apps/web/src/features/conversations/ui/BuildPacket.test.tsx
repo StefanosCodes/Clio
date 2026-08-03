@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   BuildPacketCard,
   BuildPacketDrawer,
+  BuildPacketPane,
   BuildPacketWorkspace,
 } from "./BuildPacket";
 
@@ -99,22 +100,22 @@ describe("Build Packet presentation", () => {
     expect(screen.queryByText(/fixture packet/i)).not.toBeInTheDocument();
   });
 
-  it("uses a contextual right rail with an explicit full-view action", () => {
+  it("uses a persistent content pane with an explicit full-view action", () => {
     const onOpenFullView = vi.fn();
     render(
-      <BuildPacketDrawer
+      <BuildPacketPane
         canSave
         defaultContent={packet.content}
         error={false}
         packet={packet}
         saving={false}
-        onClose={() => undefined}
+        onCloseMobile={() => undefined}
         onOpenFullView={onOpenFullView}
         onSave={() => undefined}
       />,
     );
 
-    expect(screen.getByRole("dialog", { name: "Build Packet" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Build Packet" })).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Open Build Packet full view" }),
     );
@@ -123,13 +124,13 @@ describe("Build Packet presentation", () => {
 
   it("fills missing legacy Packet fields from the current document template", () => {
     render(
-      <BuildPacketDrawer
+      <BuildPacketPane
         canSave
         defaultContent={packet.content}
         error={false}
         packet={{ version: 1, content: { outcome: "Legacy outcome" } }}
         saving={false}
-        onClose={() => undefined}
+        onCloseMobile={() => undefined}
         onOpenFullView={() => undefined}
         onSave={() => undefined}
       />,

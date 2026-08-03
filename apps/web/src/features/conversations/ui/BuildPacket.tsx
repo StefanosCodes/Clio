@@ -190,6 +190,103 @@ export function BuildPacketWorkspace({
   );
 }
 
+export function BuildPacketPane({
+  canSave,
+  defaultContent,
+  error,
+  focusOnMount = false,
+  onCloseMobile,
+  onOpenFullView,
+  onSave,
+  packet,
+  saving,
+}: {
+  canSave: boolean;
+  defaultContent: Record<string, unknown>;
+  error: boolean;
+  focusOnMount?: boolean;
+  onCloseMobile: () => void;
+  onOpenFullView: () => void;
+  onSave: (content: Record<string, unknown>) => void;
+  packet: BuildPacketRecord | null;
+  saving: boolean;
+}) {
+  const [draft, setDraft] = useState<Record<string, string>>(() =>
+    editableContent(packet, defaultContent),
+  );
+  const paneRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setDraft(editableContent(packet, defaultContent));
+  }, [packet?.version]);
+
+  useEffect(() => {
+    if (focusOnMount) paneRef.current?.focus();
+  }, [focusOnMount]);
+
+  return (
+    <section
+      className="build-packet-pane"
+      ref={paneRef}
+      tabIndex={-1}
+      aria-labelledby="build-packet-pane-title"
+    >
+      <header className="build-packet-pane-header">
+        <div>
+          <span>{packet ? `Draft · Version ${packet.version}` : "Build Packet"}</span>
+          <h2 id="build-packet-pane-title">Build Packet</h2>
+        </div>
+        <div className="build-packet-pane-controls">
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Open Build Packet full view"
+            title="Open full view"
+            onClick={onOpenFullView}
+          >
+            <Maximize2 size={17} />
+          </button>
+          <button
+            type="button"
+            className="icon-button content-pane-mobile-close"
+            aria-label="Close Build Packet"
+            onClick={onCloseMobile}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      </header>
+      <div className="build-packet-pane-content">
+        {!packet ? (
+          <p className="build-packet-pane-intro">
+            Turn this conversation into a clear, saved plan. You can keep talking while you edit it.
+          </p>
+        ) : null}
+        <PacketEditor content={draft} onChange={setDraft} />
+        <div className="build-packet-pane-actions">
+          <button
+            type="button"
+            className="primary-button"
+            disabled={!canSave || saving}
+            onClick={() => onSave(draft)}
+          >
+            {saving
+              ? "Saving…"
+              : packet
+                ? "Save new version"
+                : "Create Build Packet"}
+          </button>
+          {error ? (
+            <p className="build-packet-workspace-error" role="alert">
+              The Packet could not be saved. Reload and try again.
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function BuildPacketDrawer({
   canSave,
   defaultContent,

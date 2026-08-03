@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T22:04:05.106Z",
+  "generatedAt": "2026-08-03T22:19:50.659Z",
   "thresholds": {
     "minimumSsim": 0.999,
     "maximumPerceptualMismatchRatio": 0.001
@@ -89,7 +89,7 @@
       "reference": "docs/evidence/ui-fidelity/reference-rivet-adapted-streaming-1440x900-dark.png",
       "candidate": "docs/evidence/ui-fidelity/regression-current/streaming-desktop-dark.png",
       "diff": "docs/evidence/ui-fidelity/regression-current/streaming-desktop-dark.diff.png",
-      "ssim": 0.999961233,
+      "ssim": 0.999961275,
       "perceptualMismatchPixels": 4,
       "perceptualMismatchRatio": 0.000003086,
       "status": "production-parity"
@@ -100,7 +100,7 @@
       "reference": "docs/evidence/ui-fidelity/reference-rivet-adapted-disconnected-1440x900-dark.png",
       "candidate": "docs/evidence/ui-fidelity/regression-current/disconnected-desktop-dark.png",
       "diff": "docs/evidence/ui-fidelity/regression-current/disconnected-desktop-dark.diff.png",
-      "ssim": 0.999961278,
+      "ssim": 0.999961281,
       "perceptualMismatchPixels": 4,
       "perceptualMismatchRatio": 0.000003086,
       "status": "production-parity"
@@ -139,22 +139,22 @@
       "status": "production-parity"
     },
     {
-      "case": "packet-inline-desktop-dark",
+      "case": "workspace-desktop-dark",
       "authority": "clio-product-contract",
-      "reference": "docs/evidence/ui-fidelity/reference-clio-product-packet-inline-1440x900-dark.png",
-      "candidate": "docs/evidence/ui-fidelity/regression-current/packet-inline-desktop-dark.png",
-      "diff": "docs/evidence/ui-fidelity/regression-current/packet-inline-desktop-dark.diff.png",
-      "ssim": 1,
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-workspace-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-dark.diff.png",
+      "ssim": 0.999999868,
       "perceptualMismatchPixels": 0,
       "perceptualMismatchRatio": 0,
       "status": "production-parity"
     },
     {
-      "case": "packet-drawer-desktop-light",
+      "case": "workspace-desktop-light",
       "authority": "clio-product-contract",
-      "reference": "docs/evidence/ui-fidelity/reference-clio-product-packet-drawer-1440x900-light.png",
-      "candidate": "docs/evidence/ui-fidelity/regression-current/packet-drawer-desktop-light.png",
-      "diff": "docs/evidence/ui-fidelity/regression-current/packet-drawer-desktop-light.diff.png",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-workspace-1440x900-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-light.diff.png",
       "ssim": 1,
       "perceptualMismatchPixels": 0,
       "perceptualMismatchRatio": 0,
@@ -177,17 +177,17 @@
       "reference": "docs/evidence/ui-fidelity/reference-clio-product-activity-rail-1440x900-dark.png",
       "candidate": "docs/evidence/ui-fidelity/regression-current/activity-rail-desktop-dark.png",
       "diff": "docs/evidence/ui-fidelity/regression-current/activity-rail-desktop-dark.diff.png",
-      "ssim": 1,
+      "ssim": 0.999999954,
       "perceptualMismatchPixels": 0,
       "perceptualMismatchRatio": 0,
       "status": "production-parity"
     },
     {
-      "case": "packet-drawer-mobile-light",
+      "case": "workspace-mobile-light",
       "authority": "clio-product-contract",
-      "reference": "docs/evidence/ui-fidelity/reference-clio-product-packet-drawer-390x844-light.png",
-      "candidate": "docs/evidence/ui-fidelity/regression-current/packet-drawer-mobile-light.png",
-      "diff": "docs/evidence/ui-fidelity/regression-current/packet-drawer-mobile-light.diff.png",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-workspace-390x844-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/workspace-mobile-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/workspace-mobile-light.diff.png",
       "ssim": 1,
       "perceptualMismatchPixels": 0,
       "perceptualMismatchRatio": 0,

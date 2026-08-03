@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Menu, Moon, Sun } from "lucide-react";
+import { GripVertical, Menu, Moon, Sun } from "lucide-react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { BrowserRouter, useNavigate } from "react-router";
 
@@ -18,7 +18,7 @@ import {
   type ActivityDetail,
 } from "../features/conversations/ui/AgentActivity";
 import {
-  BuildPacketDrawer,
+  BuildPacketPane,
   BuildPacketWorkspace,
 } from "../features/conversations/ui/BuildPacket";
 import { ChatView } from "../features/conversations/ui/ChatView";
@@ -40,7 +40,6 @@ const queryClient = new QueryClient({
 type Theme = "dark" | "light";
 type DetailRail =
   | { type: "activity"; detail: ActivityDetail }
-  | { type: "packet" }
   | null;
 
 function Shell() {
@@ -60,9 +59,17 @@ function Shell() {
     return match?.[1] === organizationId ? match[2] : null;
   });
   const [lastMessage, setLastMessage] = useState("");
+  const legacyFidelityCapture =
+    import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get("legacyShell") === "1";
   const [pendingUserMessage, setPendingUserMessage] = useState<ChatMessage | null>(null);
   const [packetWorkspaceOpen, setPacketWorkspaceOpen] = useState(false);
   const [focusPacketCard, setFocusPacketCard] = useState(false);
+  const [focusPacketPane, setFocusPacketPane] = useState(false);
+  const [mobileContentOpen, setMobileContentOpen] = useState(false);
+  const [conversationPanePercent, setConversationPanePercent] = useState(48);
+  const [resizingWorkspace, setResizingWorkspace] = useState(false);
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const [detailRail, setDetailRail] = useState<DetailRail>(null);
   const [activeView, setActiveView] = useState<AppView>(() => {
     const requested = new URLSearchParams(window.location.search).get("view");
@@ -72,8 +79,8 @@ function Shell() {
   });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () =>
-      import.meta.env.DEV &&
-      new URLSearchParams(window.location.search).get("collapsed") === "1",
+      new URLSearchParams(window.location.search).get("collapsed") === "1" ||
+      !legacyFidelityCapture,
   );
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(
     () =>
@@ -113,6 +120,8 @@ function Shell() {
     setPendingUserMessage(null);
     setPacketWorkspaceOpen(false);
     setFocusPacketCard(false);
+    setFocusPacketPane(false);
+    setMobileContentOpen(false);
     setDetailRail(null);
     if (!visualFixture) setActiveView("chat");
     dispatch({ type: "reset" });
@@ -123,7 +132,7 @@ function Shell() {
       setPacketWorkspaceOpen(true);
       setDetailRail(null);
     } else if (visualFixture?.name === "packet-drawer") {
-      setDetailRail({ type: "packet" });
+      setMobileContentOpen(true);
     } else if (visualFixture?.name === "activity") {
       const message = visualFixture.session.messages.at(-1);
       if (message) {
@@ -142,6 +151,24 @@ function Shell() {
       }
     }
   }, [visualFixture]);
+
+  useEffect(() => {
+    if (!resizingWorkspace) return;
+    const updateSize = (clientX: number) => {
+      const bounds = workspaceRef.current?.getBoundingClientRect();
+      if (!bounds) return;
+      const next = ((clientX - bounds.left) / bounds.width) * 100;
+      setConversationPanePercent(Math.min(68, Math.max(32, next)));
+    };
+    const onPointerMove = (event: PointerEvent) => updateSize(event.clientX);
+    const onPointerUp = () => setResizingWorkspace(false);
+    document.addEventListener("pointermove", onPointerMove);
+    document.addEventListener("pointerup", onPointerUp);
+    return () => {
+      document.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("pointerup", onPointerUp);
+    };
+  }, [resizingWorkspace]);
 
   useEffect(() => {
     if (!selectedId && conversations.data?.[0]) {
@@ -171,6 +198,8 @@ function Shell() {
       setPendingUserMessage(null);
       setPacketWorkspaceOpen(false);
       setFocusPacketCard(false);
+      setFocusPacketPane(false);
+      setMobileContentOpen(false);
       setDetailRail(null);
       dispatch({ type: "reset" });
       navigate(`/organizations/${organizationId}/conversations/${conversation.id}`);
@@ -213,6 +242,8 @@ function Shell() {
     setMobileSidebarOpen(false);
     setPacketWorkspaceOpen(false);
     setFocusPacketCard(false);
+    setFocusPacketPane(false);
+    setMobileContentOpen(false);
     setDetailRail(null);
     navigate(`/organizations/${organizationId}/conversations/${conversationId}`);
   };
@@ -440,7 +471,14 @@ function Shell() {
       />
 
       <section className="app-main">
-        <header className="app-header">
+        <header
+          className="app-header"
+          style={
+            activeView === "chat" && !packetWorkspaceOpen && !legacyFidelityCapture
+              ? { width: `calc(${conversationPanePercent}% - 6px)` }
+              : undefined
+          }
+        >
           <div className="header-leading">
             <button
               type="button"
@@ -516,6 +554,85 @@ function Shell() {
             }}
             onSave={(content) => updatePacket.mutate(content)}
           />
+        ) : activeView === "chat" && !legacyFidelityCapture ? (
+          <div className="workspace-split" ref={workspaceRef}>
+            <section
+              className="conversation-pane"
+              style={{ flexBasis: `${conversationPanePercent}%` }}
+            >
+              <ChatView
+                focusPacketCard={focusPacketCard}
+                session={activeSession}
+                isStreaming={isStreaming}
+                packet={packet}
+                openActivityMessageId={
+                  detailRail?.type === "activity"
+                    ? detailRail.detail.messageId
+                    : null
+                }
+                skills={planningSkills}
+                onOpenConnectors={() => setActiveView("plugins")}
+                onOpenContext={() => {
+                  setDetailRail(null);
+                  setFocusPacketPane(true);
+                  setMobileContentOpen(true);
+                }}
+                onOpenActivity={(detail) =>
+                  setDetailRail({ type: "activity", detail })
+                }
+                onOpenPacket={() => {
+                  setFocusPacketCard(false);
+                  setFocusPacketPane(true);
+                  setMobileContentOpen(true);
+                }}
+                onOpenSkills={() => setActiveView("plugins")}
+                onSend={(prompt) => void send(prompt)}
+                onStop={() => void cancel()}
+              />
+            </section>
+            <button
+              type="button"
+              className={`workspace-divider${resizingWorkspace ? " is-dragging" : ""}`}
+              role="separator"
+              aria-label="Resize conversation and Build Packet panes"
+              aria-orientation="vertical"
+              aria-valuemin={32}
+              aria-valuemax={68}
+              aria-valuenow={Math.round(conversationPanePercent)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  setConversationPanePercent((value) => Math.max(32, value - 4));
+                }
+                if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  setConversationPanePercent((value) => Math.min(68, value + 4));
+                }
+              }}
+              onPointerDown={(event) => {
+                event.currentTarget.setPointerCapture(event.pointerId);
+                setResizingWorkspace(true);
+              }}
+            >
+              <GripVertical size={16} aria-hidden="true" />
+            </button>
+            <aside
+              className={`content-pane${mobileContentOpen ? " is-mobile-open" : ""}`}
+              aria-label="Build Packet content"
+            >
+              <BuildPacketPane
+                canSave={Boolean(selectedId)}
+                defaultContent={defaultPacketContent}
+                error={updatePacket.isError}
+                focusOnMount={focusPacketPane}
+                packet={packet}
+                saving={updatePacket.isPending}
+                onCloseMobile={() => setMobileContentOpen(false)}
+                onOpenFullView={() => setPacketWorkspaceOpen(true)}
+                onSave={(content) => updatePacket.mutate(content)}
+              />
+            </aside>
+          </div>
         ) : activeView === "chat" ? (
           <ChatView
             focusPacketCard={focusPacketCard}
@@ -529,17 +646,11 @@ function Shell() {
             }
             skills={planningSkills}
             onOpenConnectors={() => setActiveView("plugins")}
-            onOpenContext={() => {
-              setFocusPacketCard(false);
-              setDetailRail({ type: "packet" });
-            }}
+            onOpenContext={() => setMobileContentOpen(true)}
             onOpenActivity={(detail) =>
               setDetailRail({ type: "activity", detail })
             }
-            onOpenPacket={() => {
-              setFocusPacketCard(false);
-              setDetailRail({ type: "packet" });
-            }}
+            onOpenPacket={() => setMobileContentOpen(true)}
             onOpenSkills={() => setActiveView("plugins")}
             onSend={(prompt) => void send(prompt)}
             onStop={() => void cancel()}
@@ -564,22 +675,6 @@ function Shell() {
         <ActivityDrawer
           detail={detailRail.detail}
           onClose={() => setDetailRail(null)}
-        />
-      ) : null}
-
-      {detailRail?.type === "packet" ? (
-        <BuildPacketDrawer
-          canSave={Boolean(selectedId)}
-          defaultContent={defaultPacketContent}
-          error={updatePacket.isError}
-          packet={packet}
-          saving={updatePacket.isPending}
-          onClose={() => setDetailRail(null)}
-          onOpenFullView={() => {
-            setDetailRail(null);
-            setPacketWorkspaceOpen(true);
-          }}
-          onSave={(content) => updatePacket.mutate(content)}
         />
       ) : null}
 

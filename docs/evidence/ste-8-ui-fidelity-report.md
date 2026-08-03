@@ -9,7 +9,7 @@ Status: full repair verified locally; final owner visual acceptance pending
 
 ## Authority and acceptance
 
-- Accepted visual source: `StefanosCodes/Rivet@cf116a9968d59f2c72b900cbc42a5f3ab5a9acf4`.
+- Accepted visual sources: `StefanosCodes/Rivet@cf116a9968d59f2c72b900cbc42a5f3ab5a9acf4` for retained surfaces, plus the owner-supplied Codex workspace screenshots for the default desktop split workspace.
 - Authoritative paths, hashes, tokens, adaptation rules, and stop conditions are frozen in [`ste-8-ui-fidelity-contract.md`](./ste-8-ui-fidelity-contract.md).
 - The repository owner accepted the representative shell in this Codex task with: “Yes very much so continue.” This cleared the early representative-screen gate; it is not yet the final acceptance required before STE-8 returns to Done.
 - The original immutable Rivet captures are retained separately from the normalized Clio-string/organization reference fixtures.
@@ -41,11 +41,11 @@ Every row has a same-condition normalized reference, implementation capture, and
 | Canceled/retry | 1440×900 dark | adapted lifecycle semantics | 0.999961175 | 0.0003086% | production-parity |
 | Failed/retry | 1440×900 dark | adapted lifecycle semantics | 0.999961278 | 0.0003086% | production-parity |
 | Loading | 1440×900 dark | adapted lifecycle semantics | 0.999961175 | 0.0003086% | production-parity |
-| Inline Build Packet | 1440×900 dark | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
-| Build Packet document rail | 1440×900 light | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
+| Split chat + Build Packet workspace | 1440×900 dark | owner-approved Codex workspace contract | 0.999999868 | 0% | production-parity |
+| Split chat + Build Packet workspace | 1440×900 light | owner-approved Codex workspace contract | 1.000000000 | 0% | production-parity |
 | Build Packet workspace | 1440×900 dark | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
-| Activity rail | 1440×900 dark | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
-| Build Packet document rail | 390×844 light | owner-approved responsive contract | 1.000000000 | 0% | production-parity |
+| Activity rail | 1440×900 dark | owner-approved Clio product contract | 0.999999954 | 0% | production-parity |
+| Build Packet mobile sheet | 390×844 light | owner-approved responsive contract | 1.000000000 | 0% | production-parity |
 | Activity rail | 390×844 dark | owner-approved responsive contract | 1.000000000 | 0% | production-parity |
 | Collapsed navigation | 1440×900 dark | exact presentation | 0.999923820 | 0.0003086% | production-parity |
 | Open mobile navigation | 390×844 dark | exact presentation | 0.999931585 | 0.0012152% | production-parity |
@@ -59,14 +59,15 @@ The in-app browser exercised the real API and local PostgreSQL runtime, not the 
 1. Created a new Acme conversation through `New Chat`; the URL changed to its durable conversation ID.
 2. Sent `Verify the accepted Rivet fidelity repair end to end.` and observed the saved user message plus fixture assistant response in the Rivet transcript/compact-composer layout.
 3. Reloaded the page and observed both messages reopen from PostgreSQL.
-4. Opened an inline Build Packet card in the right document rail, changed `Outcome`, and saved a durable version 3.
-5. Expanded that rail into the central Packet workspace, then reloaded the conversation and observed version 3 and the edited outcome restored from PostgreSQL.
-6. Inspected the activity rail and verified its safe stage/source/tool summary, deterministic title, close control, and Escape behavior.
-7. Switched Acme → Orbit and observed only Orbit conversations; the Acme QA message was absent. Switched back and reopened the Acme conversation URL.
-8. Collapsed and expanded the desktop navigation.
-9. Switched dark → light → dark and verified the document theme contract.
-10. Opened and dismissed the mobile navigation at 390×844.
-11. Inspected deterministic streaming, disconnected, canceled, failed, loading, inline Packet, Packet rail/workspace, activity rail, empty, and populated states using the same application components.
+4. Used the keyboard-accessible split divider to grow the conversation pane.
+5. Created a Packet in the persistent right content pane, changed `Outcome`, saved version 2, and reloaded to observe the edit restored from PostgreSQL.
+6. Expanded the content pane into the central Packet workspace and returned to the same conversation.
+7. Inspected the activity rail and verified its safe stage/source/tool summary, deterministic title, close control, and Escape behavior.
+8. Switched Acme → Orbit and observed only Orbit conversations; the Acme QA message was absent. Switched back and reopened the Acme conversation URL.
+9. Collapsed and expanded the desktop navigation.
+10. Switched dark → light → dark and verified the document theme contract.
+11. Opened and dismissed the mobile navigation at 390×844.
+12. Inspected deterministic streaming, disconnected, canceled, failed, loading, split workspace, mobile Packet sheet, activity rail, empty, and populated states using the same application components.
 
 A final fresh-page browser pass loaded the current real API/PostgreSQL state with zero console errors and zero console warnings. An earlier development tab had recorded a Vite hot-reload warning after an effect dependency changed during implementation; that stale development-only log did not recur on the fresh page.
 
@@ -84,11 +85,11 @@ A final fresh-page browser pass loaded the current real API/PostgreSQL state wit
 
 ## Adaptations, deferrals, and exclusions
 
-- Adapted: Rivet → Clio terminology; Rivet account area → fixture organization selector; Rivet state internals → generated Clio DTO/query/stream state; completed artifact → inline Build Packet plus contextual document rail/full workspace; run detail → safe contextual activity rail; lifecycle messages → Clio reconnect/cancel/retry semantics.
+- Adapted: Rivet → Clio terminology; Rivet account area → fixture organization selector; Rivet state internals → generated Clio DTO/query/stream state; completed artifact → inline Build Packet plus persistent resizable document pane/full workspace; run detail → safe contextual activity rail; lifecycle messages → Clio reconnect/cancel/retry semantics.
 - Deferred without invented behavior: knowledge ingestion, plugin execution, and conversation rename/pin/archive/delete APIs. Their presentation remains in Rivet language, but unavailable actions are not falsely exposed.
 - Excluded: Rivet persistence, Supabase service-role REST access, CLI/brain, generic registries, historical evaluation claims, and unrelated provider behavior.
-- Intentionally different visuals: none.
-- The obsolete beige/sage shell and permanent packet column are removed.
+- Intentionally different visuals: the owner-authorized default desktop chat route is a Codex-style compact-navigation, resizable conversation/Packet workspace. Retained Rivet surfaces still use exact historical fixture parity.
+- The obsolete beige/sage shell and the old standalone Packet drawer are removed from the default workflow.
 
 ## Remaining completion gate
 

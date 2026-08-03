@@ -1,8 +1,8 @@
 # STE-8 Rivet UI fidelity contract
 
 Date: 2026-08-03
-Status: representative shell accepted; chat-centered Packet/activity amendment approved; revised implementation and final owner visual acceptance pending
-Instruction class: clone/port
+Status: representative shell accepted; Codex-style split-workspace amendment implemented and final owner visual acceptance pending
+Instruction class: clone/port for retained Rivet surfaces; owner-authorized adapt for the default desktop chat workspace
 Design authority: repository owner through the launched corrective `/goal`
 
 ## Authority
@@ -14,8 +14,8 @@ Design authority: repository owner through the launched corrective `/goal`
   - `packages/react/src/components`
   - `packages/react/src/styles.css`
 - Reference precedence: the exact committed source and its rendered fixture outrank the prior Clio screenshot and the prior completion receipt's visual claim.
-- Approved adaptation boundary: Clio data, API, URL, organization, and stream/run behavior may replace Rivet internals while retaining Rivet's observable presentation and interaction language. The owner-approved chat-centered artifact contract additionally moves Build Packet presentation into the transcript and central workspace while reserving the Rivet right rail for execution activity.
-- Explicit non-goals: redesign, new palette, permanent third column, Rivet persistence, service-role REST access, knowledge ingestion, plugin execution, generic registries, or recovery of omitted upstream business logic.
+- Approved adaptation boundary: Clio data, API, URL, organization, and stream/run behavior may replace Rivet internals while retaining Rivet's observable presentation and interaction language. The owner-approved [`ste-8-codex-workspace-layout.md`](./ste-8-codex-workspace-layout.md) additionally makes the desktop chat route a compact-nav, resizable conversation/Packet workspace.
+- Explicit non-goals: new palette, third-party persistence, service-role REST access, knowledge ingestion, plugin execution, generic registries, or recovery of omitted upstream business logic.
 
 The prior `docs/evidence/ste-8-shell.png` proves that the functional Clio shell ran. It is not reference-fidelity evidence and is superseded for visual acceptance by this corrective gate.
 
@@ -45,7 +45,8 @@ Reference file SHA-256 values:
 | Compact desktop | 1280×800, DPR 1 | dark | deterministic populated chat | recent chats, user/assistant messages, compact composer |
 | Mobile | 390×844, DPR 1 | dark and light | deterministic empty and populated chat | closed/open navigation, header, composer |
 | Recovery states | 1440×900, DPR 1 | dark | deterministic Clio state fixtures | streaming/thinking, disconnected, canceled, retry/error |
-| Detail surfaces | 1440×900, DPR 1 | dark | deterministic packet/activity fixtures | Rivet-style right drawer and close behavior |
+| Split workspace | 1440×900, DPR 1 | dark and light | deterministic chat + Packet fixture | compact navigation, resizable divider, persistent content pane |
+| Detail surfaces | 1440×900, DPR 1 | dark | deterministic activity fixture | explicit safe activity disclosure |
 
 All comparisons use the same local Chromium build, operating system, font availability, viewport, DPR, color scheme, reduced-motion setting, fixture strings, animation state, and full-page bounds. Dynamic identifiers and timestamps may be normalized in fixture data; layout, typography, colors, icons, component geometry, and navigation may not be masked. The capture runner fast-forwards CSS animation/transition state at screenshot time; its additional freeze stylesheet is intentionally omitted because applying it after navigation freezes width transitions at an intermediate frame.
 
@@ -75,13 +76,13 @@ All comparisons use the same local Chromium build, operating system, font availa
 | Theme control | Clio theme control | exact | light/dark captures | None | Goal |
 | Mobile drawer/sidebar | Clio mobile navigation | exact presentation | 390×844 captures and interaction | Data only | Goal |
 | Transcript artifact | Build Packet card after the conversational response | adapted | inline artifact capture and behavior | New owner-authorized product hierarchy | Owner amendment |
-| Contextual artifact rail | Default Packet preview/editor, with full-view promotion | adapted | rail capture, edit/save, and expansion behavior | Codex-like owner-authorized interaction | Owner amendment |
+| Persistent content pane | Default Build Packet preview/editor beside the conversation, with full-view promotion | adapted | split-workspace capture, drag/keyboard, edit/save, and expansion behavior | Codex-style owner-authorized interaction | Owner amendment |
 | Central artifact workspace | Optional focused Build Packet view with back-to-conversation action | adapted | central workspace capture and behavior | New owner-authorized product hierarchy | Owner amendment |
 | Activity rail | Safe activity, tools, sources, duration, and recovery detail | adapted | open activity capture and behavior | Mutually exclusive with the Packet rail | Owner amendment |
 | Organization selector | Workspace/account area | adapted | two-org captures and isolation test | Fixture authority label retained without new visual system | Goal |
 | Loading/error/disconnected/canceled/retry | Clio lifecycle states | adapted | deterministic state captures and tests | Status semantics are Clio-owned | STE-8 contract |
 
-The Packet placement differs intentionally from the upstream Rivet drawer pattern and is authorized by the repository owner in [`ste-8-chat-centered-interaction.md`](./ste-8-chat-centered-interaction.md). No other visual difference is authorized.
+The default desktop chat workspace differs intentionally from the upstream Rivet full-width shell. The exact scope and evidence are authorized by the repository owner in [`ste-8-codex-workspace-layout.md`](./ste-8-codex-workspace-layout.md); the legacy fixture path preserves exact upstream comparisons for retained Rivet surfaces.
 
 ## Representative-screen result
 
@@ -114,6 +115,6 @@ The repository-owned runner now compares 17 desktop/mobile, light/dark, conversa
 ## Stop record
 
 - Resolved: the missing upstream state/catalog modules do not remove the visual source; use an inert fixture-only harness.
-- Superseded: the corrective goal's initial Build Packet drawer adaptation was rejected after owner inspection. The latest explicit direction moves completed artifacts into chat/the central workspace and reserves the right rail for activity.
+- Superseded: the corrective goal's initial Build Packet drawer adaptation was rejected after owner inspection. The latest explicit direction makes the Packet a persistent right content pane alongside the conversation, with compact navigation and a resizable divider.
 - Stop if a committed visual element cannot be rendered or inferred from the exact source without creative invention.
-- Stop before retaining the current sage/beige palette, permanent packet column, or any other unapproved deviation.
+- Stop before changing a retained Rivet surface without recording an explicit owner-authorized product-contract deviation.

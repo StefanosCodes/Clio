@@ -2,13 +2,13 @@
 
 Date: 2026-08-03
 
-Status: implemented and locally verified; final owner visual acceptance pending
+Status: superseded for desktop layout by `ste-8-codex-workspace-layout.md`; retained for the Packet vocabulary, durability, and mobile-sheet rules
 
 Design authority: repository owner in the corrective Codex task
 
 ## Decision
 
-Clio follows a Codex-style hierarchy:
+Clio follows a Codex-style hierarchy. The initial rail/workspace arrangement below has been superseded on desktop by the persistent resizable split workspace in [`ste-8-codex-workspace-layout.md`](./ste-8-codex-workspace-layout.md).
 
 - the main workspace owns the conversation and completed work;
 - a Build Packet appears in the conversation as a durable artifact card;
