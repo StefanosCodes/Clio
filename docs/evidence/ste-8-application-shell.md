@@ -1,7 +1,7 @@
 # STE-8 application-shell evidence
 
-Date: 2026-08-03  
-Environment: local development only  
+Date: 2026-08-03
+Environment: local development only
 Authority: `FixtureOrganizationContext`; this is not Clerk membership or production tenant-isolation evidence.
 
 ## Outcome
