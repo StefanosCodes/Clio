@@ -1,0 +1,193 @@
+{
+  "status": "near",
+  "reference": "/Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/reference-rivet-empty-390x844-dark.png",
+  "candidate": "/Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/clio-representative-390x844-dark.png",
+  "width": 390,
+  "height": 844,
+  "totalPixels": 329160,
+  "exactMismatchPixels": 459,
+  "exactMismatchRatio": 0.0013944586219467737,
+  "perceptualMismatchPixels": 198,
+  "perceptualMismatchRatio": 0.0006015311702515494,
+  "meanAbsoluteError": 0.08828229432494836,
+  "mse": 8.058120670798395,
+  "psnr": 39.06846594183202,
+  "ssim": 0.9962114896563267,
+  "comparison": {
+    "background": "#ffffff",
+    "pixelmatchThreshold": 0.1,
+    "includeAntialiasing": false
+  },
+  "pngMetadata": {
+    "reference": {
+      "chunkCounts": {
+        "IHDR": 1,
+        "IDAT": 5,
+        "IEND": 1
+      },
+      "width": 390,
+      "height": 844,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0
+    },
+    "candidate": {
+      "chunkCounts": {
+        "IHDR": 1,
+        "IDAT": 5,
+        "IEND": 1
+      },
+      "width": 390,
+      "height": 844,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0
+    }
+  },
+  "colorAnalysis": {
+    "reference": {
+      "stride": 2,
+      "sampledPixels": 82290,
+      "uniqueSampledColors": 202,
+      "palette": [
+        {
+          "hex": "#000000",
+          "sampleRatio": 0.854843
+        },
+        {
+          "hex": "#212121",
+          "sampleRatio": 0.125118
+        },
+        {
+          "hex": "#f5f5f5",
+          "sampleRatio": 0.004508
+        },
+        {
+          "hex": "#545454",
+          "sampleRatio": 0.00237
+        },
+        {
+          "hex": "#5c5c5c",
+          "sampleRatio": 0.002345
+        },
+        {
+          "hex": "#a1a1a1",
+          "sampleRatio": 0.000778
+        },
+        {
+          "hex": "#797979",
+          "sampleRatio": 0.000194
+        },
+        {
+          "hex": "#f4f4f4",
+          "sampleRatio": 0.000194
+        },
+        {
+          "hex": "#070707",
+          "sampleRatio": 0.00017
+        },
+        {
+          "hex": "#111111",
+          "sampleRatio": 0.00017
+        }
+      ]
+    },
+    "candidate": {
+      "stride": 2,
+      "sampledPixels": 82290,
+      "uniqueSampledColors": 202,
+      "palette": [
+        {
+          "hex": "#000000",
+          "sampleRatio": 0.854745
+        },
+        {
+          "hex": "#212121",
+          "sampleRatio": 0.125325
+        },
+        {
+          "hex": "#f5f5f5",
+          "sampleRatio": 0.004508
+        },
+        {
+          "hex": "#545454",
+          "sampleRatio": 0.002382
+        },
+        {
+          "hex": "#5c5c5c",
+          "sampleRatio": 0.002345
+        },
+        {
+          "hex": "#a1a1a1",
+          "sampleRatio": 0.000523
+        },
+        {
+          "hex": "#797979",
+          "sampleRatio": 0.000194
+        },
+        {
+          "hex": "#f4f4f4",
+          "sampleRatio": 0.000194
+        },
+        {
+          "hex": "#282828",
+          "sampleRatio": 0.000182
+        },
+        {
+          "hex": "#070707",
+          "sampleRatio": 0.00017
+        }
+      ]
+    }
+  },
+  "topErrorTiles": [
+    {
+      "x": 96,
+      "y": 384,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 1.7768,
+      "mismatchRatio": 0.025825
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 0.7932,
+      "mismatchRatio": 0.012478
+    },
+    {
+      "x": 0,
+      "y": 384,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 0.5817,
+      "mismatchRatio": 0.010091
+    },
+    {
+      "x": 288,
+      "y": 480,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 0.0009,
+      "mismatchRatio": 0.000868
+    },
+    {
+      "x": 288,
+      "y": 384,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 0.0003,
+      "mismatchRatio": 0.000326
+    },
+    {
+      "x": 0,
+      "y": 480,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 0.0002,
+      "mismatchRatio": 0.000217
+    }
+  ]
+}

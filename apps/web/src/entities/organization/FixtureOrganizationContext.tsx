@@ -15,6 +15,14 @@ export const fixtureOrganizations = [
   { id: "fixture-orbit", name: "Orbit Works" },
 ] as const;
 
+export function fixtureOrganizationFromPathname(pathname: string) {
+  const requested = pathname.match(/^\/organizations\/([^/]+)/)?.[1];
+  return (
+    fixtureOrganizations.find((organization) => organization.id === requested)?.id ??
+    fixtureOrganizations[0].id
+  );
+}
+
 type FixtureOrganizationContextValue = {
   organizationId: string;
   organizationName: string;
@@ -27,7 +35,9 @@ type FixtureOrganizationContextValue = {
 const FixtureOrganizationContext = createContext<FixtureOrganizationContextValue | null>(null);
 
 export function FixtureOrganizationProvider({ children }: PropsWithChildren) {
-  const [organizationId, setOrganizationId] = useState<string>(fixtureOrganizations[0].id);
+  const [organizationId, setOrganizationId] = useState<string>(() =>
+    fixtureOrganizationFromPathname(window.location.pathname),
+  );
   const [switching, setSwitching] = useState(false);
   const [scopeEpoch, setScopeEpoch] = useState(0);
   const controllers = useRef(new Set<AbortController>());

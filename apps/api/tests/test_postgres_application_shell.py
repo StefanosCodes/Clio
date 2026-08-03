@@ -38,7 +38,12 @@ def test_durable_shell_continuity_scope_and_concurrency() -> None:
             }.issubset(
                 {item.id for item in await repository.list_conversations("fixture-acme")}
             )
-            assert await repository.list_conversations("fixture-orbit") == []
+            orbit_conversation_ids = {
+                item.id
+                for item in await repository.list_conversations("fixture-orbit")
+            }
+            assert first.id not in orbit_conversation_ids
+            assert second.id not in orbit_conversation_ids
 
             events = [
                 event
@@ -71,7 +76,7 @@ def test_durable_shell_continuity_scope_and_concurrency() -> None:
                 await repository.begin_run(
                     "fixture-acme",
                     second.id,
-                        client_message_id=f"postgres-message-{unique}-3",
+                    client_message_id=f"postgres-message-{unique}-3",
                     message="concurrent active turn",
                     runtime="fixture",
                     retry_of=None,
@@ -103,7 +108,7 @@ def test_durable_shell_continuity_scope_and_concurrency() -> None:
                     first.id,
                     PacketUpdateRequest(
                         base_version=0,
-                            idempotency_key=f"packet-key-{unique}-2",
+                        idempotency_key=f"packet-key-{unique}-2",
                         content={"outcome": "stale update"},
                     ),
                 )

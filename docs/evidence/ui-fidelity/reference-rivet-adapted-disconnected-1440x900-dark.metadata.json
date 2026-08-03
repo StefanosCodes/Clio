@@ -1,0 +1,66 @@
+{
+  "capturedAt": "2026-08-03T21:15:17.960Z",
+  "source": "http://127.0.0.1:5174/?state=disconnected&theme=dark",
+  "chromiumVersion": "149.0.7827.55",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36",
+  "viewport": {
+    "width": 1440,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "clip": {
+    "x": 0,
+    "y": 0,
+    "width": 1440,
+    "height": 900
+  },
+  "rootBounds": null,
+  "animationsDisabled": false,
+  "documentSize": {
+    "width": 1440,
+    "height": 900
+  },
+  "fontStatus": "loaded",
+  "typographySignatures": [
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 12px | 400 | normal | normal | none",
+      "count": 3
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 15px | 400 | normal | normal | none",
+      "count": 3
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 14px | 400 | normal | normal | none",
+      "count": 2
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 16px | 400 | 27.52px | normal | none",
+      "count": 2
+    },
+    {
+      "signature": "Arial | 14px | 400 | normal | normal | none",
+      "count": 2
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 13px | 400 | 22.36px | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 13px | 500 | normal | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 13px | 600 | normal | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 14px | 500 | normal | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 18px | 600 | normal | normal | none",
+      "count": 1
+    }
+  ]
+}

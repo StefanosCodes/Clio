@@ -1,0 +1,153 @@
+{
+  "status": "production-parity",
+  "reference": "/Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/reference-rivet-adapted-loading-1440x900-dark.png",
+  "candidate": "/Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/clio-loading-1440x900-dark.png",
+  "width": 1440,
+  "height": 900,
+  "totalPixels": 1296000,
+  "exactMismatchPixels": 71,
+  "exactMismatchRatio": 0.000054783950617283953,
+  "perceptualMismatchPixels": 4,
+  "perceptualMismatchRatio": 0.0000030864197530864196,
+  "meanAbsoluteError": 0.0035030864197530863,
+  "mse": 0.44872376543209874,
+  "psnr": 51.611012895013204,
+  "ssim": 0.9999612812502549,
+  "comparison": {
+    "background": "#ffffff",
+    "pixelmatchThreshold": 0.1,
+    "includeAntialiasing": false
+  },
+  "pngMetadata": {
+    "reference": {
+      "chunkCounts": {
+        "IHDR": 1,
+        "IDAT": 13,
+        "IEND": 1
+      },
+      "width": 1440,
+      "height": 900,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0
+    },
+    "candidate": {
+      "chunkCounts": {
+        "IHDR": 1,
+        "IDAT": 13,
+        "IEND": 1
+      },
+      "width": 1440,
+      "height": 900,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0
+    }
+  },
+  "colorAnalysis": {
+    "reference": {
+      "stride": 3,
+      "sampledPixels": 144000,
+      "uniqueSampledColors": 255,
+      "palette": [
+        {
+          "hex": "#000000",
+          "sampleRatio": 0.927937
+        },
+        {
+          "hex": "#212121",
+          "sampleRatio": 0.033389
+        },
+        {
+          "hex": "#2f2f2f",
+          "sampleRatio": 0.012917
+        },
+        {
+          "hex": "#181818",
+          "sampleRatio": 0.006493
+        },
+        {
+          "hex": "#545454",
+          "sampleRatio": 0.00334
+        },
+        {
+          "hex": "#f5f5f5",
+          "sampleRatio": 0.002681
+        },
+        {
+          "hex": "#262626",
+          "sampleRatio": 0.001
+        },
+        {
+          "hex": "#f5a000",
+          "sampleRatio": 0.000687
+        },
+        {
+          "hex": "#5c5c5c",
+          "sampleRatio": 0.000583
+        },
+        {
+          "hex": "#a1a1a1",
+          "sampleRatio": 0.000424
+        }
+      ]
+    },
+    "candidate": {
+      "stride": 3,
+      "sampledPixels": 144000,
+      "uniqueSampledColors": 255,
+      "palette": [
+        {
+          "hex": "#000000",
+          "sampleRatio": 0.927937
+        },
+        {
+          "hex": "#212121",
+          "sampleRatio": 0.033389
+        },
+        {
+          "hex": "#2f2f2f",
+          "sampleRatio": 0.012917
+        },
+        {
+          "hex": "#181818",
+          "sampleRatio": 0.006493
+        },
+        {
+          "hex": "#545454",
+          "sampleRatio": 0.00334
+        },
+        {
+          "hex": "#f5f5f5",
+          "sampleRatio": 0.002694
+        },
+        {
+          "hex": "#262626",
+          "sampleRatio": 0.001
+        },
+        {
+          "hex": "#f5a000",
+          "sampleRatio": 0.000687
+        },
+        {
+          "hex": "#5c5c5c",
+          "sampleRatio": 0.000583
+        },
+        {
+          "hex": "#a1a1a1",
+          "sampleRatio": 0.000424
+        }
+      ]
+    }
+  },
+  "topErrorTiles": [
+    {
+      "x": 0,
+      "y": 96,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 0.4926,
+      "mismatchRatio": 0.007704
+    }
+  ]
+}
