@@ -15,6 +15,7 @@ const evidenceRoot = path.join(repositoryRoot, "docs/evidence/ui-fidelity");
 const outputRoot = path.join(evidenceRoot, "regression-current");
 const port = 4175;
 const baseUrl = `http://127.0.0.1:${port}`;
+const updateProductBaselines = process.env.UPDATE_CLIO_PRODUCT_BASELINES === "1";
 const productionParity = {
   minimumSsim: 0.999,
   maximumPerceptualMismatchRatio: 0.001,
@@ -33,7 +34,12 @@ const cases = [
   { name: "cancelled-desktop-dark", state: "cancelled", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-cancelled-1440x900-dark.png" },
   { name: "failed-desktop-dark", state: "failed", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-failed-1440x900-dark.png" },
   { name: "loading-desktop-dark", state: "loading", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-loading-1440x900-dark.png" },
-  { name: "packet-desktop-dark", state: "packet", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-packet-1440x900-dark.png" },
+  { name: "packet-inline-desktop-dark", state: "packet", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-packet-inline-1440x900-dark.png", authority: "clio-product-contract" },
+  { name: "packet-drawer-desktop-light", state: "packet-drawer", width: 1440, height: 900, theme: "light", baseline: "reference-clio-product-packet-drawer-1440x900-light.png", authority: "clio-product-contract", dialog: "Build Packet" },
+  { name: "packet-workspace-desktop-dark", state: "packet-workspace", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-packet-workspace-1440x900-dark.png", authority: "clio-product-contract", heading: "Build Packet" },
+  { name: "activity-rail-desktop-dark", state: "activity", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-activity-rail-1440x900-dark.png", authority: "clio-product-contract", dialog: "Activity" },
+  { name: "packet-drawer-mobile-light", state: "packet-drawer", width: 390, height: 844, theme: "light", baseline: "reference-clio-product-packet-drawer-390x844-light.png", authority: "clio-product-contract", dialog: "Build Packet" },
+  { name: "activity-rail-mobile-dark", state: "activity", width: 390, height: 844, theme: "dark", baseline: "reference-clio-product-activity-rail-390x844-dark.png", authority: "clio-product-contract", dialog: "Activity" },
   { name: "collapsed-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-collapsed-1440x900-dark.png", collapsed: true },
   { name: "mobile-open-dark", state: "empty", width: 390, height: 844, theme: "dark", baseline: "reference-rivet-adapted-mobile-open-390x844-dark.png", mobileOpen: true },
   { name: "knowledge-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-knowledge-1440x900-dark.png", view: "knowledge" },
@@ -98,7 +104,9 @@ async function main() {
   fs.mkdirSync(outputRoot, { recursive: true });
   for (const testCase of cases) {
     const baseline = referencePath(testCase);
-    if (!fs.existsSync(baseline)) {
+    const productBaselineCanBeCreated =
+      testCase.authority === "clio-product-contract" && updateProductBaselines;
+    if (!fs.existsSync(baseline) && !productBaselineCanBeCreated) {
       throw new Error(`Missing immutable baseline: ${baseline}`);
     }
   }
@@ -150,8 +158,13 @@ async function main() {
             name: testCase.view === "knowledge" ? "Knowledge Base" : "Plugins",
           })
           .waitFor();
+      } else if (testCase.heading) {
+        await page.getByRole("heading", { name: testCase.heading }).waitFor();
       } else {
         await page.getByRole("textbox", { name: "Message" }).waitFor();
+      }
+      if (testCase.dialog) {
+        await page.getByRole("dialog", { name: new RegExp(testCase.dialog) }).waitFor();
       }
       await page.evaluate(async () => {
         await document.fonts?.ready;
@@ -169,6 +182,13 @@ async function main() {
       });
       await context.close();
 
+      if (
+        testCase.authority === "clio-product-contract" &&
+        updateProductBaselines
+      ) {
+        fs.copyFileSync(candidateFile, referencePath(testCase));
+      }
+
       const metrics = compare(referencePath(testCase), candidateFile);
       const diffFile = path.join(outputRoot, `${testCase.name}.diff.png`);
       fs.writeFileSync(diffFile, PNG.sync.write(metrics.diff));
@@ -178,6 +198,7 @@ async function main() {
           productionParity.maximumPerceptualMismatchRatio;
       results.push({
         case: testCase.name,
+        authority: testCase.authority ?? "rivet-reference",
         reference: path.relative(repositoryRoot, referencePath(testCase)),
         candidate: path.relative(repositoryRoot, candidateFile),
         diff: path.relative(repositoryRoot, diffFile),

@@ -1,7 +1,7 @@
 # STE-8 Rivet UI fidelity contract
 
 Date: 2026-08-03
-Status: representative screen accepted; full 17-state production-parity evidence complete; final owner visual acceptance pending
+Status: representative shell accepted; chat-centered Packet/activity amendment approved; revised implementation and final owner visual acceptance pending
 Instruction class: clone/port
 Design authority: repository owner through the launched corrective `/goal`
 
@@ -14,7 +14,7 @@ Design authority: repository owner through the launched corrective `/goal`
   - `packages/react/src/components`
   - `packages/react/src/styles.css`
 - Reference precedence: the exact committed source and its rendered fixture outrank the prior Clio screenshot and the prior completion receipt's visual claim.
-- Approved adaptation boundary: Clio data, API, URL, organization, stream/run, and Build Packet behavior may replace Rivet internals while retaining Rivet's observable presentation and interaction language.
+- Approved adaptation boundary: Clio data, API, URL, organization, and stream/run behavior may replace Rivet internals while retaining Rivet's observable presentation and interaction language. The owner-approved chat-centered artifact contract additionally moves Build Packet presentation into the transcript and central workspace while reserving the Rivet right rail for execution activity.
 - Explicit non-goals: redesign, new palette, permanent third column, Rivet persistence, service-role REST access, knowledge ingestion, plugin execution, generic registries, or recovery of omitted upstream business logic.
 
 The prior `docs/evidence/ste-8-shell.png` proves that the functional Clio shell ran. It is not reference-fidelity evidence and is superseded for visual acceptance by this corrective gate.
@@ -74,11 +74,14 @@ All comparisons use the same local Chromium build, operating system, font availa
 | Thinking/activity | Clio streaming status | adapted | streaming capture and reducer test | Clio events mapped to same presentation | Goal |
 | Theme control | Clio theme control | exact | light/dark captures | None | Goal |
 | Mobile drawer/sidebar | Clio mobile navigation | exact presentation | 390×844 captures and interaction | Data only | Goal |
-| Run detail drawer | Build Packet/activity detail surface | adapted | drawer capture and behavior | Content is Clio Build Packet; Rivet drawer language remains | Goal |
+| Transcript artifact | Build Packet card after the conversational response | adapted | inline artifact capture and behavior | New owner-authorized product hierarchy | Owner amendment |
+| Contextual artifact rail | Default Packet preview/editor, with full-view promotion | adapted | rail capture, edit/save, and expansion behavior | Codex-like owner-authorized interaction | Owner amendment |
+| Central artifact workspace | Optional focused Build Packet view with back-to-conversation action | adapted | central workspace capture and behavior | New owner-authorized product hierarchy | Owner amendment |
+| Activity rail | Safe activity, tools, sources, duration, and recovery detail | adapted | open activity capture and behavior | Mutually exclusive with the Packet rail | Owner amendment |
 | Organization selector | Workspace/account area | adapted | two-org captures and isolation test | Fixture authority label retained without new visual system | Goal |
 | Loading/error/disconnected/canceled/retry | Clio lifecycle states | adapted | deterministic state captures and tests | Status semantics are Clio-owned | STE-8 contract |
 
-No row classified `different` is currently authorized.
+The Packet placement differs intentionally from the upstream Rivet drawer pattern and is authorized by the repository owner in [`ste-8-chat-centered-interaction.md`](./ste-8-chat-centered-interaction.md). No other visual difference is authorized.
 
 ## Representative-screen result
 
@@ -111,5 +114,6 @@ The repository-owned runner now compares 17 desktop/mobile, light/dark, conversa
 ## Stop record
 
 - Resolved: the missing upstream state/catalog modules do not remove the visual source; use an inert fixture-only harness.
+- Superseded: the corrective goal's initial Build Packet drawer adaptation was rejected after owner inspection. The latest explicit direction moves completed artifacts into chat/the central workspace and reserves the right rail for activity.
 - Stop if a committed visual element cannot be rendered or inferred from the exact source without creative invention.
 - Stop before retaining the current sage/beige palette, permanent packet column, or any other unapproved deviation.

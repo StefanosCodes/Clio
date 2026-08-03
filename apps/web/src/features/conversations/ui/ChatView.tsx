@@ -8,31 +8,44 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import type { SkillCatalogItem } from "./catalog";
-import { AgentActivity } from "./AgentActivity";
+import { AgentActivity, type ActivityDetail } from "./AgentActivity";
+import { BuildPacketCard } from "./BuildPacket";
 import { PromptComposer } from "./PromptComposer";
-import type { ChatSession } from "./types";
+import type { BuildPacket, ChatSession } from "./types";
 
 type ChatViewProps = {
   session: ChatSession;
+  focusPacketCard?: boolean;
   isStreaming: boolean;
+  openActivityMessageId: string | null;
+  packet: BuildPacket | null;
   skills: SkillCatalogItem[];
   onOpenConnectors: () => void;
   onOpenContext: () => void;
+  onOpenActivity: (detail: ActivityDetail) => void;
+  onOpenPacket: () => void;
   onOpenSkills: () => void;
   onSend: (prompt: string, skillIds: string[]) => void;
   onStop: () => void;
 };
 
 function AgentMessage({
+  activityOpen,
   message,
+  onOpenActivity,
 }: {
+  activityOpen: boolean;
   message: ChatSession["messages"][number];
+  onOpenActivity: (detail: ActivityDetail) => void;
 }) {
   return (
     <article className="message assistant-message">
       <div className="message-body">
         <AgentActivity
           finishedAt={message.finishedAt}
+          isOpen={activityOpen}
+          messageId={message.id}
+          onOpenActivity={onOpenActivity}
           sources={message.sources}
           startedAt={message.startedAt}
           status={message.status}
@@ -77,11 +90,16 @@ function AgentMessage({
 }
 
 export function ChatView({
+  focusPacketCard = false,
   session,
   isStreaming,
+  packet,
+  openActivityMessageId,
   skills,
   onOpenConnectors,
   onOpenContext,
+  onOpenActivity,
+  onOpenPacket,
   onOpenSkills,
   onSend,
   onStop,
@@ -162,9 +180,21 @@ export function ChatView({
                     <div className="user-bubble">{message.content}</div>
                   </article>
                 ) : (
-                  <AgentMessage key={message.id} message={message} />
+                  <AgentMessage
+                    activityOpen={openActivityMessageId === message.id}
+                    key={message.id}
+                    message={message}
+                    onOpenActivity={onOpenActivity}
+                  />
                 ),
               )}
+              {packet ? (
+                <BuildPacketCard
+                  focusOnMount={focusPacketCard}
+                  packet={packet}
+                  onOpen={onOpenPacket}
+                />
+              ) : null}
             </div>
           </div>
           {composer}

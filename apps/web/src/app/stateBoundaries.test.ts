@@ -31,8 +31,15 @@ describe("application shell state boundaries", () => {
   });
 
   it("does not optimistically declare packet success", () => {
-    const source = readFileSync(resolve(sourceRoot, "app/App.tsx"), "utf8");
-    expect(source).not.toContain("onMutate:");
-    expect(source).toContain("Version conflict or save failure");
+    const applicationSource = readFileSync(
+      resolve(sourceRoot, "app/App.tsx"),
+      "utf8",
+    );
+    const packetSource = readFileSync(
+      resolve(sourceRoot, "features/conversations/ui/BuildPacket.tsx"),
+      "utf8",
+    );
+    expect(applicationSource).not.toContain("onMutate:");
+    expect(packetSource).toContain("The Packet could not be saved");
   });
 });

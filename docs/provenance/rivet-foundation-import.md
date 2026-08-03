@@ -31,6 +31,7 @@ attribution/changes notice is retained at `third_party/rivet/NOTICE.md`.
 | `packages/react/src/components/chat-view.tsx` | `apps/web/src/features/conversations/ui/ChatView.tsx` | empty/populated chat, transcript, compact composer, and message presentation | local Clio types/catalog and Clio thinking label |
 | `packages/react/src/components/prompt-composer.tsx` | `apps/web/src/features/conversations/ui/PromptComposer.tsx` | composer geometry, controls, command/action menus, and responsive behavior | Clio terminology and Build Packet action |
 | `packages/react/src/components/agent-activity.tsx` | `apps/web/src/features/conversations/ui/AgentActivity.tsx` | thinking, steps, tool, source, and activity disclosure patterns | local Clio activity types |
+| Rivet artifact/activity interaction language | `apps/web/src/features/conversations/ui/BuildPacket.tsx` | contextual rail geometry and full-workspace promotion | owner-approved inline Packet, live document editing, and durable version save |
 
 The corrective STE-8 fidelity repair began from mechanical copies of the five
 presentation files above, then applied the recorded Clio adaptations. These
@@ -106,8 +107,8 @@ model, and service tier evidence. The current resolver identified
 | desktop 1440×900 light normalized comparison | PASS; production-parity, SSIM 0.999961 |
 | mobile 390×844 dark normalized comparison | PASS; production-parity, SSIM 0.999207 |
 | mobile 390×844 light normalized comparison | PASS; production-parity, SSIM 0.999302 |
-| full deterministic visual matrix | PASS; 17/17 states at SSIM ≥ 0.999 and perceptual mismatch ≤ 0.1%, with no masks |
-| `npm test --workspace @clio/web` | PASS; 6 files / 23 tests |
+| full deterministic visual matrix | PASS; 22/22 states at SSIM ≥ 0.999 and perceptual mismatch ≤ 0.1%, with no masks; new Packet/activity baselines are labeled `clio-product-contract` |
+| `npm test --workspace @clio/web` | PASS; 7 files / 33 tests |
 | `npm run build --workspace @clio/web` | PASS; TypeScript project build and Vite production build |
 | `npm audit --audit-level=high` | PASS; 0 vulnerabilities |
 

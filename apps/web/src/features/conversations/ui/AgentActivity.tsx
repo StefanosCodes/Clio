@@ -2,15 +2,13 @@ import {
   BookOpen,
   Check,
   ChevronRight,
-  Database,
   ExternalLink,
   Globe2,
   LoaderCircle,
-  Search,
   Settings2,
   X,
 } from "lucide-react";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 import type {
@@ -19,6 +17,16 @@ import type {
   ChatSource,
   ToolActivity,
 } from "./types";
+
+export type ActivityDetail = {
+  messageId: string;
+  finishedAt: number | null;
+  sources: ChatSource[];
+  startedAt: number | null;
+  status: ChatMessage["status"];
+  steps: ActivityStep[];
+  tools: ToolActivity[];
+};
 
 function readableName(value: string): string {
   return value.replace(/[_-]+/g, " ").replace(/\b\w/g, (letter) =>
@@ -87,21 +95,17 @@ function publicActivity(
   return labels;
 }
 
-function RunDetailDrawer({
-  duration,
+export function ActivityDrawer({
+  detail,
   onClose,
-  publicSteps,
-  running,
-  sources,
-  tools,
 }: {
-  duration: number | null;
+  detail: ActivityDetail;
   onClose: () => void;
-  publicSteps: string[];
-  running: boolean;
-  sources: ChatSource[];
-  tools: ToolActivity[];
 }) {
+  const { finishedAt, sources, startedAt, status, steps, tools } = detail;
+  const duration = elapsedSeconds(startedAt, finishedAt);
+  const running = status === "queued" || status === "running";
+  const publicSteps = publicActivity(steps, tools, sources);
   const title = duration === null ? "Activity" : `Activity · ${duration}s`;
   const webSearchRunning = tools.some(
     (tool) => tool.name === "web_search" && tool.status === "running",
@@ -125,8 +129,6 @@ function RunDetailDrawer({
           : running
             ? "Thinking"
             : publicSteps.at(-1) ?? "Finished";
-  const domains = Array.from(new Set(sources.map(sourceDomain)));
-
   useEffect(() => {
     document.documentElement.classList.add("run-detail-open");
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -162,33 +164,27 @@ function RunDetailDrawer({
         </header>
         <div className="detail-drawer-content">
           <section className="run-detail-section">
-            <h3>Thinking</h3>
+            <h3>Activity</h3>
             <div className="activity-timeline">
-              <div className="activity-timeline-item">
-                <span className="activity-timeline-icon">
-                  {webSearchRunning || sources.some((source) => source.kind === "web") ? (
-                    <Globe2 size={15} />
-                  ) : knowledgeSearchRunning ||
-                    sources.some((source) => source.kind === "knowledge") ? (
-                    <Database size={15} />
-                  ) : (
-                    <Search size={15} />
-                  )}
-                </span>
-                <div>
-                  <strong>{activeLabel}</strong>
-                  {domains.length > 0 ? (
-                    <div className="activity-domain-list">
-                      {domains.slice(0, 4).map((domain) => (
-                        <span key={domain}>{domain}</span>
-                      ))}
-                      {domains.length > 4 ? (
-                        <span>+{domains.length - 4} more</span>
-                      ) : null}
+              {(publicSteps.length > 0 ? publicSteps : [activeLabel]).map(
+                (step, index, steps) => (
+                  <div className="activity-timeline-item" key={`${step}-${index}`}>
+                    <span className="activity-timeline-icon">
+                      {index === steps.length - 1 && running ? (
+                        <LoaderCircle className="spin" size={15} />
+                      ) : (
+                        <Check size={15} />
+                      )}
+                    </span>
+                    <div>
+                      <strong>{step}</strong>
+                      <span>
+                        {index === steps.length - 1 && running ? "In progress" : "Done"}
+                      </span>
                     </div>
-                  ) : null}
-                </div>
-              </div>
+                  </div>
+                ),
+              )}
               <div className="activity-timeline-item is-finished">
                 <span className="activity-timeline-icon">
                   {running ? (
@@ -252,6 +248,23 @@ function RunDetailDrawer({
             </section>
           ) : null}
 
+          {tools.length > 0 ? (
+            <section className="run-detail-section">
+              <h3>Tools · {tools.length}</h3>
+              <div className="activity-tool-list">
+                {tools.map((tool) => (
+                  <div key={tool.name}>
+                    <Settings2 size={15} />
+                    <span>
+                      <strong>{readableName(tool.name)}</strong>
+                      <small>{tool.summary ?? readableName(tool.status)}</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
         </div>
     </aside>,
     document.body,
@@ -261,6 +274,9 @@ function RunDetailDrawer({
 export function AgentActivity({
   children,
   finishedAt,
+  isOpen,
+  messageId,
+  onOpenActivity,
   sources,
   startedAt,
   status,
@@ -269,19 +285,22 @@ export function AgentActivity({
 }: {
   children: ReactNode;
   finishedAt: number | null;
+  isOpen: boolean;
+  messageId: string;
+  onOpenActivity: (detail: ActivityDetail) => void;
   sources: ChatSource[];
   startedAt: number | null;
   status: ChatMessage["status"];
   steps: ActivityStep[];
   tools: ToolActivity[];
 }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const hasDetails = tools.length > 0 || sources.length > 0;
   const duration = elapsedSeconds(startedAt, finishedAt);
   const activity = useMemo(
     () => publicActivity(steps, tools, sources),
     [sources, steps, tools],
   );
+  const hasEvidenceDetails = tools.length > 0 || sources.length > 0;
+  const hasActivity = activity.length > 0 || hasEvidenceDetails;
   const running = status === "queued" || status === "running";
   const runningTool = tools.find((tool) => tool.status === "running");
   const label = running
@@ -293,7 +312,17 @@ export function AgentActivity({
     : duration === null
       ? "Activity"
       : `Worked for ${duration}s`;
-  const showActivity = running || hasDetails;
+  const showActivity = running || hasActivity;
+  const openActivity = () =>
+    onOpenActivity({
+      messageId,
+      finishedAt,
+      sources,
+      startedAt,
+      status,
+      steps,
+      tools,
+    });
 
   return (
     <>
@@ -302,8 +331,8 @@ export function AgentActivity({
           <button
             type="button"
             className="agent-activity-trigger"
-            aria-expanded={drawerOpen}
-            onClick={() => setDrawerOpen(true)}
+            aria-expanded={isOpen}
+            onClick={openActivity}
           >
             <span>
               {running ? (
@@ -322,9 +351,9 @@ export function AgentActivity({
 
       {children}
 
-      {hasDetails ? (
+      {hasEvidenceDetails ? (
         <div className="response-actions">
-          <button type="button" onClick={() => setDrawerOpen(true)}>
+          <button type="button" onClick={openActivity}>
             {sources.length > 0 ? (
               <BookOpen size={14} />
             ) : (
@@ -335,16 +364,6 @@ export function AgentActivity({
         </div>
       ) : null}
 
-      {drawerOpen ? (
-        <RunDetailDrawer
-          duration={duration}
-          publicSteps={activity}
-          running={running}
-          sources={sources}
-          tools={tools}
-          onClose={() => setDrawerOpen(false)}
-        />
-      ) : null}
     </>
   );
 }

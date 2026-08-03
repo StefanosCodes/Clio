@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun } from "lucide-react";
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { BrowserRouter, useNavigate } from "react-router";
 
@@ -13,6 +13,14 @@ import {
   streamReducer,
 } from "../features/conversations/model/streamReducer";
 import { planningSkills } from "../features/conversations/ui/catalog";
+import {
+  ActivityDrawer,
+  type ActivityDetail,
+} from "../features/conversations/ui/AgentActivity";
+import {
+  BuildPacketDrawer,
+  BuildPacketWorkspace,
+} from "../features/conversations/ui/BuildPacket";
 import { ChatView } from "../features/conversations/ui/ChatView";
 import { Sidebar, type AppView } from "../features/conversations/ui/Sidebar";
 import type {
@@ -30,6 +38,10 @@ const queryClient = new QueryClient({
 });
 
 type Theme = "dark" | "light";
+type DetailRail =
+  | { type: "activity"; detail: ActivityDetail }
+  | { type: "packet" }
+  | null;
 
 function Shell() {
   const {
@@ -49,7 +61,9 @@ function Shell() {
   });
   const [lastMessage, setLastMessage] = useState("");
   const [pendingUserMessage, setPendingUserMessage] = useState<ChatMessage | null>(null);
-  const [packetOpen, setPacketOpen] = useState(false);
+  const [packetWorkspaceOpen, setPacketWorkspaceOpen] = useState(false);
+  const [focusPacketCard, setFocusPacketCard] = useState(false);
+  const [detailRail, setDetailRail] = useState<DetailRail>(null);
   const [activeView, setActiveView] = useState<AppView>(() => {
     const requested = new URLSearchParams(window.location.search).get("view");
     return import.meta.env.DEV && (requested === "knowledge" || requested === "plugins")
@@ -97,13 +111,36 @@ function Shell() {
     setSelectedId(null);
     setLastMessage("");
     setPendingUserMessage(null);
-    setPacketOpen(false);
+    setPacketWorkspaceOpen(false);
+    setFocusPacketCard(false);
+    setDetailRail(null);
     if (!visualFixture) setActiveView("chat");
     dispatch({ type: "reset" });
   }, [scopeEpoch, visualFixture]);
 
   useEffect(() => {
-    if (visualFixture?.name === "packet") setPacketOpen(true);
+    if (visualFixture?.name === "packet-workspace") {
+      setPacketWorkspaceOpen(true);
+      setDetailRail(null);
+    } else if (visualFixture?.name === "packet-drawer") {
+      setDetailRail({ type: "packet" });
+    } else if (visualFixture?.name === "activity") {
+      const message = visualFixture.session.messages.at(-1);
+      if (message) {
+        setDetailRail({
+          type: "activity",
+          detail: {
+            messageId: message.id,
+            finishedAt: message.finishedAt,
+            sources: message.sources,
+            startedAt: message.startedAt,
+            status: message.status,
+            steps: message.steps,
+            tools: message.tools,
+          },
+        });
+      }
+    }
   }, [visualFixture]);
 
   useEffect(() => {
@@ -132,13 +169,25 @@ function Shell() {
       setActiveView("chat");
       setMobileSidebarOpen(false);
       setPendingUserMessage(null);
+      setPacketWorkspaceOpen(false);
+      setFocusPacketCard(false);
+      setDetailRail(null);
       dispatch({ type: "reset" });
       navigate(`/organizations/${organizationId}/conversations/${conversation.id}`);
     },
   });
 
+  const defaultPacketContent = useMemo(
+    () => ({
+      outcome: "A reviewed, version-bound Build Packet",
+      audience: organizationName,
+      status: "Draft",
+    }),
+    [organizationName],
+  );
+
   const updatePacket = useMutation({
-    mutationFn: () => {
+    mutationFn: (content: Record<string, unknown> = defaultPacketContent) => {
       if (!selectedId) throw new Error("Select a conversation first");
       const baseVersion = detail.data?.packet?.version ?? 0;
       return clioApi.updatePacket(
@@ -146,12 +195,7 @@ function Shell() {
         selectedId,
         baseVersion,
         crypto.randomUUID(),
-        {
-          outcome: "A reviewed, version-bound Build Packet",
-          audience: organizationName,
-          status: "Fixture — planning intelligence arrives after M1",
-          source_conversation: selectedId,
-        },
+        { ...content, source_conversation: selectedId },
       );
     },
     onSuccess: async () => {
@@ -167,6 +211,9 @@ function Shell() {
     setSelectedId(conversationId);
     setActiveView("chat");
     setMobileSidebarOpen(false);
+    setPacketWorkspaceOpen(false);
+    setFocusPacketCard(false);
+    setDetailRail(null);
     navigate(`/organizations/${organizationId}/conversations/${conversationId}`);
   };
 
@@ -365,7 +412,7 @@ function Shell() {
   const packet = visualFixture?.packet ?? detail.data?.packet ?? null;
 
   return (
-    <div className={`app-shell${packetOpen ? " run-detail-open" : ""}`}>
+    <div className="app-shell">
       <Sidebar
         activeView={activeView}
         activeSessionId={activeSession.id}
@@ -403,8 +450,11 @@ function Shell() {
             >
               <Menu size={19} />
             </button>
-            {activeView === "chat" && activeSession.messages.length > 0 ? (
-              <span className="header-title">{activeSession.title}</span>
+            {activeView === "chat" &&
+            (activeSession.messages.length > 0 || packetWorkspaceOpen) ? (
+              <span className="header-title">
+                {packetWorkspaceOpen ? "Build Packet" : activeSession.title}
+              </span>
             ) : null}
           </div>
           <button
@@ -453,13 +503,43 @@ function Shell() {
           </div>
         ) : null}
 
-        {activeView === "chat" ? (
+        {activeView === "chat" && packetWorkspaceOpen ? (
+          <BuildPacketWorkspace
+            canSave={Boolean(selectedId)}
+            defaultContent={defaultPacketContent}
+            error={updatePacket.isError}
+            packet={packet}
+            saving={updatePacket.isPending}
+            onBack={() => {
+              setPacketWorkspaceOpen(false);
+              setFocusPacketCard(Boolean(packet));
+            }}
+            onSave={(content) => updatePacket.mutate(content)}
+          />
+        ) : activeView === "chat" ? (
           <ChatView
+            focusPacketCard={focusPacketCard}
             session={activeSession}
             isStreaming={isStreaming}
+            packet={packet}
+            openActivityMessageId={
+              detailRail?.type === "activity"
+                ? detailRail.detail.messageId
+                : null
+            }
             skills={planningSkills}
             onOpenConnectors={() => setActiveView("plugins")}
-            onOpenContext={() => setPacketOpen(true)}
+            onOpenContext={() => {
+              setFocusPacketCard(false);
+              setDetailRail({ type: "packet" });
+            }}
+            onOpenActivity={(detail) =>
+              setDetailRail({ type: "activity", detail })
+            }
+            onOpenPacket={() => {
+              setFocusPacketCard(false);
+              setDetailRail({ type: "packet" });
+            }}
             onOpenSkills={() => setActiveView("plugins")}
             onSend={(prompt) => void send(prompt)}
             onStop={() => void cancel()}
@@ -480,59 +560,29 @@ function Shell() {
         )}
       </section>
 
-      {packetOpen ? (
-        <aside className="detail-drawer run-detail-drawer" aria-label="Build Packet">
-          <header className="detail-drawer-header run-detail-header">
-            <div>
-              <span>Versioned fixture artifact</span>
-              <h2>Build Packet</h2>
-            </div>
-            <button
-              type="button"
-              className="icon-button"
-              aria-label="Close Build Packet"
-              onClick={() => setPacketOpen(false)}
-            >
-              <X size={18} />
-            </button>
-          </header>
-          <div className="detail-drawer-content clio-packet-content">
-            {packet ? (
-              <>
-                <p className="clio-packet-version">Version {packet.version} · saved</p>
-                {Object.entries(packet.content).map(([key, value]) => (
-                  <section className="clio-packet-section" key={key}>
-                    <h3>{key.replaceAll("_", " ")}</h3>
-                    <p>{String(value)}</p>
-                  </section>
-                ))}
-              </>
-            ) : (
-              <div className="clio-packet-empty">
-                <h3>No packet snapshot yet</h3>
-                <p>M1 uses a versioned fixture to prove the artifact boundary.</p>
-              </div>
-            )}
-            <button
-              className="primary-button clio-packet-action"
-              type="button"
-              disabled={!selectedId || updatePacket.isPending}
-              onClick={() => updatePacket.mutate()}
-            >
-              {packet ? "Create next fixture version" : "Create fixture packet"}
-            </button>
-            {updatePacket.isError ? (
-              <p className="clio-packet-error" role="alert">
-                Version conflict or save failure. Reload before retrying.
-              </p>
-            ) : null}
-            <div className="clio-packet-boundary">
-              <strong>Evaluation boundary</strong>
-              <p>Planning quality is not claimed in M1. STE-37 adds executable evidence.</p>
-            </div>
-          </div>
-        </aside>
+      {detailRail?.type === "activity" ? (
+        <ActivityDrawer
+          detail={detailRail.detail}
+          onClose={() => setDetailRail(null)}
+        />
       ) : null}
+
+      {detailRail?.type === "packet" ? (
+        <BuildPacketDrawer
+          canSave={Boolean(selectedId)}
+          defaultContent={defaultPacketContent}
+          error={updatePacket.isError}
+          packet={packet}
+          saving={updatePacket.isPending}
+          onClose={() => setDetailRail(null)}
+          onOpenFullView={() => {
+            setDetailRail(null);
+            setPacketWorkspaceOpen(true);
+          }}
+          onSave={(content) => updatePacket.mutate(content)}
+        />
+      ) : null}
+
     </div>
   );
 }

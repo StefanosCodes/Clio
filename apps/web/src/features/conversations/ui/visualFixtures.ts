@@ -8,7 +8,10 @@ export type VisualFixtureName =
   | "cancelled"
   | "failed"
   | "loading"
-  | "packet";
+  | "packet"
+  | "packet-drawer"
+  | "packet-workspace"
+  | "activity";
 
 export type VisualFixture = {
   name: VisualFixtureName;
@@ -88,14 +91,17 @@ export function resolveVisualFixture(
     "failed",
     "loading",
     "packet",
+    "packet-drawer",
+    "packet-workspace",
+    "activity",
   ];
   if (!names.includes(requested as VisualFixtureName)) return null;
   const name = requested as VisualFixtureName;
 
   let messages: ChatSession["messages"] = [];
-  if (["populated", "packet", "cancelled", "loading"].includes(name)) {
+  if (["populated", "packet", "packet-drawer", "packet-workspace", "cancelled", "loading"].includes(name)) {
     messages = [userMessage, completedAssistantMessage];
-  } else if (name === "streaming") {
+  } else if (name === "streaming" || name === "activity") {
     messages = [
       userMessage,
       {
@@ -103,8 +109,37 @@ export function resolveVisualFixture(
         id: "fixture-assistant-streaming",
         status: "running",
         content: "",
+        startedAt: name === "activity" ? null : completedAssistantMessage.startedAt,
         finishedAt: null,
-        steps: [{ title: "Shaping the outcome" }],
+        steps:
+          name === "activity"
+            ? [
+                { title: "Reviewing conversation context" },
+                { title: "Shaping the accepted outcome" },
+              ]
+            : [{ title: "Shaping the outcome" }],
+        tools:
+          name === "activity"
+            ? [
+                {
+                  name: "search_knowledge_base",
+                  status: "completed",
+                  summary: "Reviewed the delivery boundary",
+                },
+              ]
+            : [],
+        sources:
+          name === "activity"
+            ? [
+                {
+                  id: "fixture-source",
+                  kind: "knowledge",
+                  provider: "Clio",
+                  title: "Accepted delivery boundary",
+                  description: "Authorized fixture context for the M1 planning shell.",
+                },
+              ]
+            : [],
       },
     ];
   } else if (name === "disconnected") {
@@ -140,7 +175,7 @@ export function resolveVisualFixture(
     updatedAt: capturedAt - 60_000,
   };
   const streamStatus =
-    name === "streaming"
+    name === "streaming" || name === "activity"
       ? "streaming"
       : name === "disconnected"
         ? "disconnected"
@@ -163,13 +198,13 @@ export function resolveVisualFixture(
           : null,
     loading: name === "loading",
     packet:
-      name === "packet"
+      name === "packet" || name === "packet-drawer" || name === "packet-workspace"
         ? {
             version: 2,
             content: {
               outcome: "A reviewed, version-bound Build Packet",
               audience: "Acme Studio",
-              status: "Fixture — planning intelligence arrives after M1",
+              status: "Draft",
             },
           }
         : null,

@@ -37,3 +37,8 @@ export type ChatSession = {
   updatedAt: number;
   messages: ChatMessage[];
 };
+
+export type BuildPacket = {
+  version: number;
+  content: Record<string, unknown>;
+};

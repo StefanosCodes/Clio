@@ -36,12 +36,17 @@ Every row has a same-condition normalized reference, implementation capture, and
 | Populated chat | 1280×800 dark | exact presentation, fixture data | 0.999977064 | 0.0003906% | production-parity |
 | Populated chat | 390×844 dark | exact responsive presentation | 0.999999004 | 0% | production-parity |
 | Populated chat | 390×844 light | exact responsive presentation | 0.999999204 | 0% | production-parity |
-| Streaming/thinking/activity | 1440×900 dark | adapted Clio events in Rivet activity UI | 0.999961275 | 0.0003086% | production-parity |
-| Disconnected/reconnect | 1440×900 dark | adapted lifecycle semantics | 0.999961281 | 0.0003086% | production-parity |
+| Streaming/thinking | 1440×900 dark | adapted Clio events in Rivet activity UI | 0.999961233 | 0.0003086% | production-parity |
+| Disconnected/reconnect | 1440×900 dark | adapted lifecycle semantics | 0.999961278 | 0.0003086% | production-parity |
 | Canceled/retry | 1440×900 dark | adapted lifecycle semantics | 0.999961175 | 0.0003086% | production-parity |
 | Failed/retry | 1440×900 dark | adapted lifecycle semantics | 0.999961278 | 0.0003086% | production-parity |
 | Loading | 1440×900 dark | adapted lifecycle semantics | 0.999961175 | 0.0003086% | production-parity |
-| Build Packet drawer | 1440×900 dark | adapted Clio artifact in Rivet drawer | 0.999955139 | 0.0013889% | production-parity |
+| Inline Build Packet | 1440×900 dark | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
+| Build Packet document rail | 1440×900 light | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
+| Build Packet workspace | 1440×900 dark | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
+| Activity rail | 1440×900 dark | owner-approved Clio product contract | 1.000000000 | 0% | production-parity |
+| Build Packet document rail | 390×844 light | owner-approved responsive contract | 1.000000000 | 0% | production-parity |
+| Activity rail | 390×844 dark | owner-approved responsive contract | 1.000000000 | 0% | production-parity |
 | Collapsed navigation | 1440×900 dark | exact presentation | 0.999923820 | 0.0003086% | production-parity |
 | Open mobile navigation | 390×844 dark | exact presentation | 0.999931585 | 0.0012152% | production-parity |
 | Knowledge placeholder | 1440×900 dark | deferred capability in Rivet library treatment | 0.999971829 | 0.0002315% | production-parity |
@@ -54,18 +59,20 @@ The in-app browser exercised the real API and local PostgreSQL runtime, not the 
 1. Created a new Acme conversation through `New Chat`; the URL changed to its durable conversation ID.
 2. Sent `Verify the accepted Rivet fidelity repair end to end.` and observed the saved user message plus fixture assistant response in the Rivet transcript/compact-composer layout.
 3. Reloaded the page and observed both messages reopen from PostgreSQL.
-4. Opened `Add files and tools` → `Build Packet`, created version 1, and observed the saved version/content in the Rivet drawer.
-5. Switched Acme → Orbit and observed only Orbit conversations; the Acme QA message was absent. Switched back and reopened the Acme conversation URL.
-6. Collapsed and expanded the desktop navigation.
-7. Switched dark → light → dark and verified the document theme contract.
-8. Opened and dismissed the mobile navigation at 390×844.
-9. Inspected deterministic streaming, disconnected, canceled, failed, loading, packet, empty, and populated states using the same application components.
+4. Opened an inline Build Packet card in the right document rail, changed `Outcome`, and saved a durable version 3.
+5. Expanded that rail into the central Packet workspace, then reloaded the conversation and observed version 3 and the edited outcome restored from PostgreSQL.
+6. Inspected the activity rail and verified its safe stage/source/tool summary, deterministic title, close control, and Escape behavior.
+7. Switched Acme → Orbit and observed only Orbit conversations; the Acme QA message was absent. Switched back and reopened the Acme conversation URL.
+8. Collapsed and expanded the desktop navigation.
+9. Switched dark → light → dark and verified the document theme contract.
+10. Opened and dismissed the mobile navigation at 390×844.
+11. Inspected deterministic streaming, disconnected, canceled, failed, loading, inline Packet, Packet rail/workspace, activity rail, empty, and populated states using the same application components.
 
 A final fresh-page browser pass loaded the current real API/PostgreSQL state with zero console errors and zero console warnings. An earlier development tab had recorded a Vite hot-reload warning after an effect dependency changed during implementation; that stale development-only log did not recur on the fresh page.
 
 ## Functional and accessibility evidence
 
-- Frontend component/state tests: 6 files, 23 tests passed.
+- Frontend component/state tests: 7 files, 33 tests passed.
 - TypeScript project check: passed.
 - Vite production build: passed.
 - Default backend suite: 11 passed, 1 explicitly skipped PostgreSQL marker.
@@ -77,7 +84,7 @@ A final fresh-page browser pass loaded the current real API/PostgreSQL state wit
 
 ## Adaptations, deferrals, and exclusions
 
-- Adapted: Rivet → Clio terminology; Rivet account area → fixture organization selector; Rivet state internals → generated Clio DTO/query/stream state; run detail → versioned Build Packet drawer; lifecycle messages → Clio reconnect/cancel/retry semantics.
+- Adapted: Rivet → Clio terminology; Rivet account area → fixture organization selector; Rivet state internals → generated Clio DTO/query/stream state; completed artifact → inline Build Packet plus contextual document rail/full workspace; run detail → safe contextual activity rail; lifecycle messages → Clio reconnect/cancel/retry semantics.
 - Deferred without invented behavior: knowledge ingestion, plugin execution, and conversation rename/pin/archive/delete APIs. Their presentation remains in Rivet language, but unavailable actions are not falsely exposed.
 - Excluded: Rivet persistence, Supabase service-role REST access, CLI/brain, generic registries, historical evaluation claims, and unrelated provider behavior.
 - Intentionally different visuals: none.
