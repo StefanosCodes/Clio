@@ -4,9 +4,10 @@ import { describe, expect, it } from "vitest";
 import { App } from "./App";
 
 describe("App", () => {
-  it("boots the bounded Clio foundation", () => {
+  it("boots the working shell with honest fixture authority", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: "Clio" })).toBeInTheDocument();
-    expect(screen.getByText(/ready for the application shell/i)).toBeInTheDocument();
+    expect(screen.getByText("Idea to accepted work")).toBeInTheDocument();
+    expect(screen.getByText(/fixture authority · m1 only/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /what should we shape next/i })).toBeInTheDocument();
   });
 });

@@ -28,7 +28,7 @@ async def event_stream(
         yield encode_event(event)
 
 
-@router.post("/chat/stream")
+@router.post("/chat/stream", responses={200: {"model": StreamEvent}})
 async def stream_foundation_chat(
     request: FoundationChatRequest,
     http_request: Request,

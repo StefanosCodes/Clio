@@ -11,9 +11,11 @@
     "build": "npm --workspace @clio/web run build",
     "check": "npm --workspace @clio/web run check",
     "test": "npm --workspace @clio/web run test",
-    "verify": "npm run check && npm run test && npm run build"
+    "verify": "npm run check && npm run test && npm run build",
+    "generate:api": "PYTHONPATH=apps/api/src apps/api/.venv/bin/python apps/api/scripts/export_openapi.py && openapi-typescript packages/api-client/openapi.json -o packages/api-client/src/schema.ts"
   },
   "devDependencies": {
+    "openapi-typescript": "7.13.0",
     "supabase": "2.110.0"
   },
   "engines": {

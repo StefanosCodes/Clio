@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Clio's FastAPI control plane and planning-agent foundation."
 requires-python = ">=3.13"
 dependencies = [
+  "asyncpg==0.31.0",
   "fastapi==0.140.13",
   "httpx==0.28.1",
   "openai-agents==0.19.0",
@@ -24,6 +25,10 @@ dev = [
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+markers = [
+  "postgres: requires the local Supabase Postgres stack",
+  "provider: performs an explicitly bounded real provider call",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
