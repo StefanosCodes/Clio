@@ -48,7 +48,7 @@ sequenceDiagram
 | --- | --- | --- | --- |
 | Conversation | Remains the primary work surface | exact Rivet language | desktop/mobile Rivet comparisons |
 | Packet card | Appears after the transcript as a first-class saved artifact | owner-authorized Clio adaptation | deterministic inline-card capture and component test |
-| Packet rail | Normal card click opens a right-side preview/editor while chat remains visible | owner-authorized Clio adaptation | deterministic rail capture and edit/save browser flow |
+| Packet rail | Normal card click opens a right-side read-only document while chat remains visible | owner-authorized Clio adaptation | deterministic rail capture and create/open/reload browser flow |
 | Packet workspace | Optional full view replaces the main chat content temporarily | owner-authorized Clio adaptation | deterministic populated/empty workspace capture and browser flow |
 | Back to conversation | Returns from the Packet workspace without changing conversation identity | owner-authorized Clio adaptation | component/browser interaction |
 | Activity trigger | Appears inline with an active or evidence-bearing assistant response | adapted Rivet activity language | streaming/activity captures |
@@ -58,7 +58,7 @@ sequenceDiagram
 
 ## Copy boundary
 
-Customer-facing surfaces use `Build Packet`, `Draft`, `Version`, `Open`, `Back to conversation`, `Save new version`, and `Continue in chat`. They do not expose implementation phrases such as `versioned fixture artifact`, `fixture packet`, or `evaluation boundary`.
+Customer-facing surfaces use `Build Packet`, `Create`, `Saved`, `Version`, `Open`, `Back to conversation`, and `Continue in chat`. Saved Packets are read-only in M1, so `Edit source` and `Save new version` are not exposed. They do not expose implementation phrases such as `versioned fixture artifact`, `fixture packet`, or `evaluation boundary`.
 
 Fixture authority remains explicit in the organization footer and repository evidence. Removing engineering copy from the Packet surface does not turn the M1 deterministic response into a production-intelligence claim.
 

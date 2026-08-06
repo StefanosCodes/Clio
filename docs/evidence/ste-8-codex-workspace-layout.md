@@ -2,7 +2,7 @@
 
 Date: 2026-08-03
 
-Status: owner-authorized; implementation in progress
+Status: owner-authorized; superseded in part by `ste-8-m1-ux-closeout.md`
 
 ## Authority
 
@@ -22,9 +22,9 @@ compact top-left navigation | resizable conversation pane | persistent plan/cont
 
 - Navigation is a compact icon rail at the far left. Its first control expands the existing navigation and recent-chat list when needed.
 - Conversation is anchored to the left of the work area, with its transcript and composer sharing a single pane.
-- Build Packet is the default content document in the right pane. It is readable and editable without hiding the conversation.
+- Build Packet opens as a secondary content document after the user selects its in-thread artifact action. Saved Packets are readable Markdown documents and are not edited in M1.
 - A draggable, keyboard-accessible separator changes the left-pane width. The preference is local UI state; it does not change a conversation or Packet record.
-- A user-created or empty Packet remains a normal durable artifact: create/save always goes through the existing versioned API mutation.
+- The first Packet remains a normal durable artifact: its in-thread create action goes through the existing versioned API mutation.
 - Activity remains safe summarized UI. It may temporarily occupy the contextual detail surface only after the user explicitly opens it; it never exposes private reasoning.
 - On narrow screens, the conversation remains primary and content opens as a full-width sheet rather than creating two unusably narrow columns.
 
@@ -34,7 +34,7 @@ compact top-left navigation | resizable conversation pane | persistent plan/cont
 | --- | --- | --- | --- |
 | Narrow icon column at top left | Collapsed Clio navigation rail | adapted | desktop capture and keyboard/click test |
 | Side-by-side conversation and document | resizable chat/Packet workspace | adapted | desktop capture, drag/keyboard test |
-| Document stays visible while chatting | persistent editable Build Packet pane | adapted | real browser save/reload flow |
+| Document opens beside chat | secondary read-only Build Packet pane | adapted | real browser create/open/reload flow |
 | Divider between work areas | accessible layout separator | adapted | pointer and keyboard behavior test |
 | Small-screen content treatment | full-width Packet sheet | adapted | mobile capture and close behavior |
 | Existing Rivet transcript/composer language | unchanged inside the left conversation pane | retained | chat state regression suite |
@@ -51,9 +51,9 @@ compact top-left navigation | resizable conversation pane | persistent plan/cont
 
 ## Acceptance criteria
 
-1. At desktop width, the conversation and Build Packet are simultaneously visible; the chat is left-aligned rather than centered beneath a full-width shell.
+1. At desktop width, opening the Build Packet presents conversation and document side by side; chat remains primary before that action.
 2. The separator can be dragged, and has accessible semantics plus keyboard adjustment.
-3. Opening and saving a Packet edits the document in the right content pane and creates the next durable version.
+3. Creating a Packet from its in-thread action persists version 1; opening a saved Packet renders the exact accepted content without an edit form.
 4. The compact left rail can reveal the existing navigation without losing current conversation identity.
 5. Mobile never compresses chat and Packet into side-by-side slivers.
 6. The old permanent drawer geometry is not presented as the default workspace.

@@ -12,7 +12,6 @@ import {
   initialStreamState,
   streamReducer,
 } from "../features/conversations/model/streamReducer";
-import { planningSkills } from "../features/conversations/ui/catalog";
 import {
   ActivityDrawer,
   type ActivityDetail,
@@ -22,7 +21,8 @@ import {
   BuildPacketWorkspace,
 } from "../features/conversations/ui/BuildPacket";
 import { ChatView } from "../features/conversations/ui/ChatView";
-import { Sidebar, type AppView } from "../features/conversations/ui/Sidebar";
+import { createBuildPacketTemplate } from "../features/conversations/ui/packetTemplate";
+import { Sidebar, type AppView, type SettingsSection } from "../features/conversations/ui/Sidebar";
 import type {
   ChatMessage,
   ChatSession,
@@ -42,6 +42,31 @@ type DetailRail =
   | { type: "activity"; detail: ActivityDetail }
   | null;
 
+function apiErrorStatus(error: unknown) {
+  if (!error || typeof error !== "object" || !("status" in error)) return null;
+  const status = (error as { status?: unknown }).status;
+  return typeof status === "number" ? status : null;
+}
+
+function requestedSettingsRoute() {
+  const parameters = new URLSearchParams(window.location.search);
+  const view = parameters.get("view");
+  const requestedSection = parameters.get("section");
+  const section: SettingsSection =
+    requestedSection === "appearance" ||
+    requestedSection === "knowledge" ||
+    requestedSection === "plugins"
+      ? requestedSection
+      : view === "knowledge" || view === "plugins"
+        ? view
+        : "general";
+
+  return {
+    active: view === "settings" || view === "knowledge" || view === "plugins",
+    section,
+  };
+}
+
 function Shell() {
   const {
     organizationId,
@@ -56,14 +81,19 @@ function Shell() {
     const match = window.location.pathname.match(
       /^\/organizations\/([^/]+)\/conversations\/([^/]+)/,
     );
-    return match?.[1] === organizationId ? match[2] : null;
+    return match?.[1] === organizationId && match[2] !== "new" ? match[2] : null;
   });
+  const [draftChatOpen, setDraftChatOpen] = useState(() => selectedId === null);
   const [lastMessage, setLastMessage] = useState("");
   const legacyFidelityCapture =
     import.meta.env.DEV &&
     new URLSearchParams(window.location.search).get("legacyShell") === "1";
   const [pendingUserMessage, setPendingUserMessage] = useState<ChatMessage | null>(null);
   const [packetWorkspaceOpen, setPacketWorkspaceOpen] = useState(false);
+  const [packetPaneOpen, setPacketPaneOpen] = useState(false);
+  const [hiddenEmptySessionIds, setHiddenEmptySessionIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [focusPacketCard, setFocusPacketCard] = useState(false);
   const [focusPacketPane, setFocusPacketPane] = useState(false);
   const [mobileContentOpen, setMobileContentOpen] = useState(false);
@@ -72,16 +102,21 @@ function Shell() {
   const workspaceRef = useRef<HTMLDivElement>(null);
   const [detailRail, setDetailRail] = useState<DetailRail>(null);
   const [activeView, setActiveView] = useState<AppView>(() => {
-    const requested = new URLSearchParams(window.location.search).get("view");
-    return import.meta.env.DEV && (requested === "knowledge" || requested === "plugins")
-      ? requested
-      : "chat";
+    return import.meta.env.DEV && requestedSettingsRoute().active ? "settings" : "chat";
   });
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(
-    () =>
-      new URLSearchParams(window.location.search).get("collapsed") === "1" ||
-      !legacyFidelityCapture,
+  const [settingsSection, setSettingsSection] = useState<SettingsSection>(
+    () => requestedSettingsRoute().section,
   );
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(
+    () => {
+      const explicitlyCollapsed =
+        new URLSearchParams(window.location.search).get("collapsed") === "1";
+      if (explicitlyCollapsed) return true;
+      if (import.meta.env.DEV && requestedSettingsRoute().active) return false;
+      return !legacyFidelityCapture;
+    },
+  );
+  const [sidebarWidth, setSidebarWidth] = useState(236);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(
     () =>
       import.meta.env.DEV &&
@@ -116,9 +151,12 @@ function Shell() {
     if (observedScopeEpoch.current === scopeEpoch) return;
     observedScopeEpoch.current = scopeEpoch;
     setSelectedId(null);
+    setDraftChatOpen(true);
+    setHiddenEmptySessionIds(new Set());
     setLastMessage("");
     setPendingUserMessage(null);
     setPacketWorkspaceOpen(false);
+    setPacketPaneOpen(false);
     setFocusPacketCard(false);
     setFocusPacketPane(false);
     setMobileContentOpen(false);
@@ -171,19 +209,21 @@ function Shell() {
   }, [resizingWorkspace]);
 
   useEffect(() => {
-    if (!selectedId && conversations.data?.[0]) {
+    if (!draftChatOpen && !selectedId && conversations.data?.[0]) {
       setSelectedId(conversations.data[0].id);
       navigate(`/organizations/${organizationId}/conversations/${conversations.data[0].id}`, {
         replace: true,
       });
     }
-  }, [conversations.data, navigate, organizationId, selectedId]);
+  }, [conversations.data, draftChatOpen, navigate, organizationId, selectedId]);
 
   const detail = useQuery({
     queryKey: organizationKey(organizationId, "conversation", selectedId),
     queryFn: ({ signal }) =>
       clioApi.getConversation(organizationId, selectedId as string, signal),
     enabled: Boolean(selectedId) && !visualFixture,
+    retry: (failureCount, error) =>
+      apiErrorStatus(error) === 404 ? false : failureCount < 1,
   });
 
   const createConversation = useMutation({
@@ -193,10 +233,17 @@ function Shell() {
         queryKey: organizationKey(organizationId, "conversations"),
       });
       setSelectedId(conversation.id);
+      setDraftChatOpen(false);
+      setHiddenEmptySessionIds((current) => {
+        const next = new Set(current);
+        next.delete(conversation.id);
+        return next;
+      });
       setActiveView("chat");
       setMobileSidebarOpen(false);
       setPendingUserMessage(null);
       setPacketWorkspaceOpen(false);
+      setPacketPaneOpen(false);
       setFocusPacketCard(false);
       setFocusPacketPane(false);
       setMobileContentOpen(false);
@@ -207,11 +254,7 @@ function Shell() {
   });
 
   const defaultPacketContent = useMemo(
-    () => ({
-      outcome: "A reviewed, version-bound Build Packet",
-      audience: organizationName,
-      status: "Draft",
-    }),
+    () => createBuildPacketTemplate(organizationName),
     [organizationName],
   );
 
@@ -234,13 +277,40 @@ function Shell() {
     },
   });
 
+  const beginDraftConversation = () => {
+    dispatch({ type: "reset" });
+    activeStreamController.current?.abort("draft-chat");
+    if (selectedId && activeSession.messages.length === 0) {
+      setHiddenEmptySessionIds((current) => new Set(current).add(selectedId));
+    }
+    setSelectedId(null);
+    setDraftChatOpen(true);
+    setActiveView("chat");
+    setMobileSidebarOpen(false);
+    setPendingUserMessage(null);
+    setPacketWorkspaceOpen(false);
+    setPacketPaneOpen(false);
+    setFocusPacketCard(false);
+    setFocusPacketPane(false);
+    setMobileContentOpen(false);
+    setDetailRail(null);
+    navigate(`/organizations/${organizationId}/conversations/new`);
+  };
+
   const selectConversation = (conversationId: string) => {
     dispatch({ type: "reset" });
     setPendingUserMessage(null);
+    setHiddenEmptySessionIds((current) => {
+      const next = new Set(current);
+      next.delete(conversationId);
+      return next;
+    });
     setSelectedId(conversationId);
+    setDraftChatOpen(false);
     setActiveView("chat");
     setMobileSidebarOpen(false);
     setPacketWorkspaceOpen(false);
+    setPacketPaneOpen(false);
     setFocusPacketCard(false);
     setFocusPacketPane(false);
     setMobileContentOpen(false);
@@ -260,7 +330,12 @@ function Shell() {
     retryOf?: string,
   ) => {
     const prompt = reconnect ? lastMessage || message.trim() : message.trim();
-    if (!selectedId || !prompt || (reconnect && !recoveryRunId)) return;
+    if (!prompt || (reconnect && (!selectedId || !recoveryRunId))) return;
+    let conversationId = selectedId;
+    if (!conversationId) {
+      const conversation = await createConversation.mutateAsync();
+      conversationId = conversation.id;
+    }
     const controller = new AbortController();
     activeStreamController.current = controller;
     const unregister = registerAbort(controller);
@@ -282,7 +357,7 @@ function Shell() {
     try {
       await clioApi.streamTurn(
         organizationId,
-        selectedId,
+        conversationId,
         {
           message: prompt,
           clientMessageId: reconnect
@@ -297,7 +372,7 @@ function Shell() {
       );
       await Promise.all([
         scopedQueryClient.invalidateQueries({
-          queryKey: organizationKey(organizationId, "conversation", selectedId),
+          queryKey: organizationKey(organizationId, "conversation", conversationId),
         }),
         scopedQueryClient.invalidateQueries({
           queryKey: organizationKey(organizationId, "conversations"),
@@ -406,7 +481,7 @@ function Shell() {
   }, [conversations.data, detail.data?.messages, pendingUserMessage, selectedId, stream.error, stream.runId, stream.status, stream.text]);
 
   const emptyPresentationSession: ChatSession = {
-    id: selectedId ?? "new-chat",
+    id: "new-chat",
     title: "New Chat",
     status: "active" as const,
     pinned: false,
@@ -417,7 +492,9 @@ function Shell() {
   const activeSession = visualFixture
     ? visualFixture.session
     : sessions.find((session) => session.id === selectedId) ?? emptyPresentationSession;
-  const presentationSessions = visualFixture ? visualFixture.sessions : sessions;
+  const presentationSessions = visualFixture
+    ? visualFixture.sessions
+    : sessions.filter((session) => !hiddenEmptySessionIds.has(session.id));
   const persistedRecoveryStatus =
     stream.status === "idle" && latestPersistedRun?.status === "running"
       ? "disconnected"
@@ -440,7 +517,27 @@ function Shell() {
   const streamingSessionIds = new Set<string>(
     isStreaming ? [activeSession.id] : [],
   );
-  const packet = visualFixture?.packet ?? detail.data?.packet ?? null;
+  const packet = visualFixture?.packet ?? (selectedId ? detail.data?.packet : null) ?? null;
+  const splitWorkspaceOpen =
+    packetPaneOpen ||
+    visualFixture?.name === "packet" ||
+    visualFixture?.name === "packet-drawer";
+  const detailErrorStatus = apiErrorStatus(detail.error);
+
+  useEffect(() => {
+    if (visualFixture || !selectedId || detailErrorStatus !== 404) return;
+    setSelectedId(null);
+    setDraftChatOpen(true);
+    setPendingUserMessage(null);
+    setPacketWorkspaceOpen(false);
+    setPacketPaneOpen(false);
+    setFocusPacketCard(false);
+    setFocusPacketPane(false);
+    setMobileContentOpen(false);
+    setDetailRail(null);
+    dispatch({ type: "reset" });
+    navigate(`/organizations/${organizationId}/conversations/new`, { replace: true });
+  }, [detailErrorStatus, navigate, organizationId, selectedId, visualFixture]);
 
   return (
     <div className="app-shell">
@@ -450,31 +547,36 @@ function Shell() {
         collapsed={sidebarCollapsed}
         mobileOpen={mobileSidebarOpen}
         sessions={presentationSessions}
+        sidebarWidth={sidebarWidth}
         streamingSessionIds={streamingSessionIds}
         organizationId={organizationId}
         organizationName={organizationName}
         organizations={fixtureOrganizations}
         sessionActionsEnabled={false}
+        settingsSection={settingsSection}
         onSwitchOrganization={switchOrganization}
         onArchiveSession={() => undefined}
         onCloseMobile={() => setMobileSidebarOpen(false)}
         onDeleteSession={() => undefined}
-        onNewChat={() => createConversation.mutate()}
+        onNewChat={beginDraftConversation}
         onRenameSession={() => undefined}
         onSelectSession={selectConversation}
+        onSelectSettingsSection={setSettingsSection}
         onSelectView={(view) => {
           setActiveView(view);
+          if (view === "settings") setSidebarCollapsed(false);
           setMobileSidebarOpen(false);
         }}
         onTogglePinnedSession={() => undefined}
-        onToggleCollapsed={() => setSidebarCollapsed((value) => !value)}
+        onCollapsedChange={setSidebarCollapsed}
+        onSidebarWidthChange={setSidebarWidth}
       />
 
       <section className="app-main">
         <header
           className="app-header"
           style={
-            activeView === "chat" && !packetWorkspaceOpen && !legacyFidelityCapture
+            activeView === "chat" && !packetWorkspaceOpen && splitWorkspaceOpen && !legacyFidelityCapture
               ? { width: `calc(${conversationPanePercent}% - 6px)` }
               : undefined
           }
@@ -511,7 +613,7 @@ function Shell() {
             <button type="button" onClick={() => void conversations.refetch()}>Retry</button>
           </div>
         ) : null}
-        {detail.isError ? (
+        {detail.isError && detailErrorStatus !== 404 ? (
           <div className="clio-status-banner" role="alert">
             Saved history is unavailable.
             <button type="button" onClick={() => void detail.refetch()}>Retry</button>
@@ -554,7 +656,7 @@ function Shell() {
             }}
             onSave={(content) => updatePacket.mutate(content)}
           />
-        ) : activeView === "chat" && !legacyFidelityCapture ? (
+        ) : activeView === "chat" && splitWorkspaceOpen && !legacyFidelityCapture ? (
           <div className="workspace-split" ref={workspaceRef}>
             <section
               className="conversation-pane"
@@ -564,19 +666,16 @@ function Shell() {
                 focusPacketCard={focusPacketCard}
                 session={activeSession}
                 isStreaming={isStreaming}
+                packetCreationError={updatePacket.isError}
+                packetCreationPending={updatePacket.isPending}
+                showPacketStarter={!legacyFidelityCapture}
                 packet={packet}
                 openActivityMessageId={
                   detailRail?.type === "activity"
                     ? detailRail.detail.messageId
                     : null
                 }
-                skills={planningSkills}
-                onOpenConnectors={() => setActiveView("plugins")}
-                onOpenContext={() => {
-                  setDetailRail(null);
-                  setFocusPacketPane(true);
-                  setMobileContentOpen(true);
-                }}
+                onCreatePacket={() => updatePacket.mutate(defaultPacketContent)}
                 onOpenActivity={(detail) =>
                   setDetailRail({ type: "activity", detail })
                 }
@@ -584,8 +683,8 @@ function Shell() {
                   setFocusPacketCard(false);
                   setFocusPacketPane(true);
                   setMobileContentOpen(true);
+                  setPacketPaneOpen(true);
                 }}
-                onOpenSkills={() => setActiveView("plugins")}
                 onSend={(prompt) => void send(prompt)}
                 onStop={() => void cancel()}
               />
@@ -627,7 +726,10 @@ function Shell() {
                 focusOnMount={focusPacketPane}
                 packet={packet}
                 saving={updatePacket.isPending}
-                onCloseMobile={() => setMobileContentOpen(false)}
+                onCloseMobile={() => {
+                  setMobileContentOpen(false);
+                  setPacketPaneOpen(false);
+                }}
                 onOpenFullView={() => setPacketWorkspaceOpen(true)}
                 onSave={(content) => updatePacket.mutate(content)}
               />
@@ -638,34 +740,66 @@ function Shell() {
             focusPacketCard={focusPacketCard}
             session={activeSession}
             isStreaming={isStreaming}
+            packetCreationError={updatePacket.isError}
+            packetCreationPending={updatePacket.isPending}
+            showPacketStarter={!legacyFidelityCapture}
             packet={packet}
             openActivityMessageId={
               detailRail?.type === "activity"
                 ? detailRail.detail.messageId
                 : null
             }
-            skills={planningSkills}
-            onOpenConnectors={() => setActiveView("plugins")}
-            onOpenContext={() => setMobileContentOpen(true)}
+            onCreatePacket={() => updatePacket.mutate(defaultPacketContent)}
             onOpenActivity={(detail) =>
               setDetailRail({ type: "activity", detail })
             }
-            onOpenPacket={() => setMobileContentOpen(true)}
-            onOpenSkills={() => setActiveView("plugins")}
+            onOpenPacket={() => {
+              setFocusPacketCard(false);
+              setFocusPacketPane(true);
+              setMobileContentOpen(true);
+              setPacketPaneOpen(true);
+            }}
             onSend={(prompt) => void send(prompt)}
             onStop={() => void cancel()}
           />
         ) : (
-          <section className="library-view">
-            <div className="library-inner">
-              <header className="library-header">
-                <h1>{activeView === "knowledge" ? "Knowledge Base" : "Plugins"}</h1>
+          <section className="settings-view">
+            <div className="settings-content">
+              <header className="settings-header">
+                <h2>
+                  {settingsSection === "general"
+                    ? "General"
+                    : settingsSection === "appearance"
+                      ? "Appearance"
+                      : settingsSection === "knowledge"
+                        ? "Knowledge Base"
+                        : "Plugins"}
+                </h2>
                 <p>
-                  {activeView === "knowledge"
-                    ? "Connect planning context to future Clio conversations."
-                    : "Clio integrations arrive after the M1 evaluation boundary."}
+                  {settingsSection === "general"
+                    ? "Manage workspace basics for the local M1 shell."
+                    : settingsSection === "appearance"
+                      ? "Adjust local interface preferences."
+                      : settingsSection === "knowledge"
+                    ? "Manage the sources Clio can use when planning work."
+                    : "Manage connected tools and services for future workflows."}
                 </p>
               </header>
+              <section className="settings-empty-state">
+                <strong>
+                  {settingsSection === "general"
+                    ? "General settings are limited in M1."
+                    : settingsSection === "appearance"
+                      ? "Appearance settings are local for this shell."
+                      : settingsSection === "knowledge"
+                    ? "Knowledge setup is not active in M1."
+                    : "Plugin setup is not active in M1."}
+                </strong>
+                <p>
+                  This milestone keeps these surfaces visible as settings, while
+                  chat stays focused on conversations and Build Packets.
+                </p>
+              </section>
             </div>
           </section>
         )}

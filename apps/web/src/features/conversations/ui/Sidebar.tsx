@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   Archive,
   Blocks,
   BookOpen,
@@ -8,15 +9,37 @@ import {
   Pencil,
   Pin,
   PinOff,
+  Search,
+  Settings,
   SquarePen,
+  Sun,
   Trash2,
   X,
 } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 
 import type { ChatSession } from "./types";
 
-export type AppView = "chat" | "knowledge" | "plugins";
+export type AppView = "chat" | "settings";
+export type SettingsSection = "general" | "appearance" | "knowledge" | "plugins";
+
+const settingsGroups = [
+  {
+    label: "Personal",
+    items: [
+      { id: "general" as const, label: "General", icon: Settings },
+      { id: "appearance" as const, label: "Appearance", icon: Sun },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { id: "knowledge" as const, label: "Knowledge Base", icon: BookOpen },
+      { id: "plugins" as const, label: "Plugins", icon: Blocks },
+    ],
+  },
+];
 
 type SidebarProps = {
   activeView: AppView;
@@ -24,11 +47,13 @@ type SidebarProps = {
   collapsed: boolean;
   mobileOpen: boolean;
   sessions: ChatSession[];
+  sidebarWidth: number;
   streamingSessionIds: Set<string>;
   organizationId: string;
   organizationName: string;
   organizations: ReadonlyArray<{ id: string; name: string }>;
   sessionActionsEnabled?: boolean;
+  settingsSection: SettingsSection;
   onSwitchOrganization: (organizationId: string) => void | Promise<void>;
   onArchiveSession: (sessionId: string) => void | Promise<void>;
   onCloseMobile: () => void;
@@ -39,18 +64,15 @@ type SidebarProps = {
     title: string,
   ) => void | Promise<void>;
   onSelectSession: (sessionId: string) => void;
+  onSelectSettingsSection: (section: SettingsSection) => void;
   onSelectView: (view: AppView) => void;
   onTogglePinnedSession: (
     sessionId: string,
     pinned: boolean,
   ) => void | Promise<void>;
-  onToggleCollapsed: () => void;
+  onCollapsedChange: (collapsed: boolean) => void;
+  onSidebarWidthChange: (width: number) => void;
 };
-
-const navigation = [
-  { id: "knowledge" as const, label: "Knowledge Base", icon: BookOpen },
-  { id: "plugins" as const, label: "Plugins", icon: Blocks },
-];
 
 function SidebarButton({
   active,
@@ -61,7 +83,7 @@ function SidebarButton({
 }: {
   active?: boolean;
   collapsed: boolean;
-  icon: typeof BookOpen;
+  icon: typeof Settings;
   label: string;
   onClick: () => void;
 }) {
@@ -85,11 +107,13 @@ export function Sidebar({
   collapsed,
   mobileOpen,
   sessions,
+  sidebarWidth,
   streamingSessionIds,
   organizationId,
   organizationName,
   organizations,
   sessionActionsEnabled = true,
+  settingsSection,
   onSwitchOrganization,
   onArchiveSession,
   onCloseMobile,
@@ -97,9 +121,11 @@ export function Sidebar({
   onNewChat,
   onRenameSession,
   onSelectSession,
+  onSelectSettingsSection,
   onSelectView,
   onTogglePinnedSession,
-  onToggleCollapsed,
+  onCollapsedChange,
+  onSidebarWidthChange,
 }: SidebarProps) {
   const [menuSessionId, setMenuSessionId] = useState<string | null>(null);
   const [renamingSessionId, setRenamingSessionId] = useState<string | null>(
@@ -107,6 +133,7 @@ export function Sidebar({
   );
   const [renameDraft, setRenameDraft] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<ChatSession | null>(null);
+  const [settingsSearch, setSettingsSearch] = useState("");
   const activeSession = sessions.find(
     (session) => session.id === activeSessionId,
   );
@@ -123,6 +150,9 @@ export function Sidebar({
         Number(right.pinned) - Number(left.pinned) ||
         right.updatedAt - left.updatedAt,
     );
+  const sidebarStyle = collapsed
+    ? undefined
+    : ({ "--sidebar-width": `${sidebarWidth}px` } as CSSProperties);
 
   const beginRename = (session: ChatSession) => {
     setRenameDraft(session.title);
@@ -162,14 +192,76 @@ export function Sidebar({
         />
       ) : null}
       <aside
+        style={sidebarStyle}
         className={[
           "sidebar",
+          activeView === "settings" ? "is-settings-mode" : "",
           collapsed ? "is-collapsed" : "",
           mobileOpen ? "is-mobile-open" : "",
         ]
           .filter(Boolean)
           .join(" ")}
       >
+        {activeView === "settings" && !collapsed ? (
+          <>
+            <div className="settings-mode-header">
+              <button
+                type="button"
+                className="settings-back"
+                onClick={() => onSelectView("chat")}
+              >
+                <ArrowLeft size={18} strokeWidth={1.8} />
+                Back to app
+              </button>
+              <button
+                type="button"
+                className="icon-button sidebar-mobile-close"
+                aria-label="Close sidebar"
+                onClick={onCloseMobile}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <label className="settings-search">
+              <Search size={16} strokeWidth={1.8} />
+              <span className="sr-only">Search settings</span>
+              <input
+                type="search"
+                placeholder="Search settings..."
+                value={settingsSearch}
+                onChange={(event) => setSettingsSearch(event.target.value)}
+              />
+            </label>
+            <nav className="settings-mode-nav" aria-label="Settings">
+              {settingsGroups.map((group) => {
+                const items = group.items.filter((item) =>
+                  item.label.toLowerCase().includes(settingsSearch.toLowerCase()),
+                );
+                if (items.length === 0) return null;
+                return (
+                  <section key={group.label}>
+                    <h2>{group.label}</h2>
+                    {items.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <button
+                          type="button"
+                          className={settingsSection === item.id ? "is-active" : ""}
+                          key={item.id}
+                          onClick={() => onSelectSettingsSection(item.id)}
+                        >
+                          <Icon size={17} strokeWidth={1.8} />
+                          <span>{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </section>
+                );
+              })}
+            </nav>
+          </>
+        ) : (
+          <>
         <div className="sidebar-header">
           {!collapsed ? <strong className="brand-name">Clio</strong> : null}
           <button
@@ -185,7 +277,7 @@ export function Sidebar({
             className="icon-button sidebar-collapse"
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            onClick={onToggleCollapsed}
+            onClick={() => onCollapsedChange(!collapsed)}
           >
             {collapsed ? (
               <PanelLeftOpen size={18} />
@@ -203,19 +295,29 @@ export function Sidebar({
             label="New Chat"
             onClick={onNewChat}
           />
-          {navigation.map((item) => (
-            <SidebarButton
-              key={item.id}
-              active={activeView === item.id}
-              collapsed={collapsed}
-              icon={item.icon}
-              label={item.label}
-              onClick={() => onSelectView(item.id)}
-            />
-          ))}
         </nav>
 
-        {!collapsed ? (
+        {!collapsed && activeView === "settings" ? (
+          <section className="sidebar-settings" aria-labelledby="sidebar-settings-title">
+            <h2 id="sidebar-settings-title">Settings</h2>
+            <button
+              type="button"
+              className={settingsSection === "knowledge" ? "is-active" : ""}
+              onClick={() => onSelectSettingsSection("knowledge")}
+            >
+              <BookOpen size={17} strokeWidth={1.8} />
+              <span>Knowledge Base</span>
+            </button>
+            <button
+              type="button"
+              className={settingsSection === "plugins" ? "is-active" : ""}
+              onClick={() => onSelectSettingsSection("plugins")}
+            >
+              <Blocks size={17} strokeWidth={1.8} />
+              <span>Plugins</span>
+            </button>
+          </section>
+        ) : !collapsed ? (
           <section className="recent-section" aria-labelledby="recent-chats">
             <h2 id="recent-chats">Recents</h2>
             <div className="recent-list">
@@ -374,7 +476,46 @@ export function Sidebar({
               <span>Fixture organization · M1</span>
             </label>
           ) : null}
+          <button
+            type="button"
+            className={`icon-button sidebar-settings-trigger${
+              activeView === "settings" ? " is-active" : ""
+            }`}
+            aria-label="Settings"
+            title="Settings"
+            onClick={() => onSelectView("settings")}
+          >
+            <Settings size={17} strokeWidth={1.8} />
+          </button>
         </footer>
+          </>
+        )}
+        <button
+          type="button"
+          className="sidebar-resize-handle"
+          aria-label="Resize sidebar"
+          title="Resize sidebar"
+          onPointerDown={(event) => {
+            event.preventDefault();
+            const pointerId = event.pointerId;
+            event.currentTarget.setPointerCapture(pointerId);
+            const onPointerMove = (moveEvent: PointerEvent) => {
+              const nextWidth = Math.min(320, Math.max(48, moveEvent.clientX));
+              if (nextWidth <= 76) {
+                onCollapsedChange(true);
+                return;
+              }
+              onCollapsedChange(false);
+              onSidebarWidthChange(nextWidth);
+            };
+            const onPointerUp = () => {
+              document.removeEventListener("pointermove", onPointerMove);
+              document.removeEventListener("pointerup", onPointerUp);
+            };
+            document.addEventListener("pointermove", onPointerMove);
+            document.addEventListener("pointerup", onPointerUp);
+          }}
+        />
       </aside>
       {deleteTarget ? (
         <div

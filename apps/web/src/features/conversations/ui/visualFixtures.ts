@@ -1,4 +1,5 @@
 import type { ChatSession } from "./types";
+import { createBuildPacketTemplate } from "./packetTemplate";
 
 export type VisualFixtureName =
   | "empty"
@@ -60,6 +61,8 @@ const completedAssistantMessage = {
   tools: [],
   sources: [],
 };
+
+const buildPacketFixtureContent = createBuildPacketTemplate("Orbit Works");
 
 function session(
   name: VisualFixtureName,
@@ -201,11 +204,7 @@ export function resolveVisualFixture(
       name === "packet" || name === "packet-drawer" || name === "packet-workspace"
         ? {
             version: 2,
-            content: {
-              outcome: "A reviewed, version-bound Build Packet",
-              audience: "Acme Studio",
-              status: "Draft",
-            },
+            content: buildPacketFixtureContent,
           }
         : null,
   };

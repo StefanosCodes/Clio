@@ -22,28 +22,29 @@ const productionParity = {
 };
 
 const cases = [
-  { name: "empty-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-empty-1440x900-dark.png", legacyShell: true },
-  { name: "empty-desktop-light", state: "empty", width: 1440, height: 900, theme: "light", baseline: "reference-rivet-adapted-empty-1440x900-light.png", legacyShell: true },
-  { name: "empty-mobile-dark", state: "empty", width: 390, height: 844, theme: "dark", baseline: "reference-rivet-adapted-empty-390x844-dark.png", legacyShell: true },
-  { name: "empty-mobile-light", state: "empty", width: 390, height: 844, theme: "light", baseline: "reference-rivet-adapted-empty-390x844-light.png", legacyShell: true },
-  { name: "populated-desktop-dark", state: "populated", width: 1280, height: 800, theme: "dark", baseline: "reference-rivet-adapted-populated-1280x800-dark.png", legacyShell: true },
-  { name: "populated-mobile-dark", state: "populated", width: 390, height: 844, theme: "dark", baseline: "reference-rivet-adapted-populated-390x844-dark.png", legacyShell: true },
-  { name: "populated-mobile-light", state: "populated", width: 390, height: 844, theme: "light", baseline: "reference-rivet-adapted-populated-390x844-light.png", legacyShell: true },
-  { name: "streaming-desktop-dark", state: "streaming", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-streaming-1440x900-dark.png", legacyShell: true },
-  { name: "disconnected-desktop-dark", state: "disconnected", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-disconnected-1440x900-dark.png", legacyShell: true },
-  { name: "cancelled-desktop-dark", state: "cancelled", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-cancelled-1440x900-dark.png", legacyShell: true },
-  { name: "failed-desktop-dark", state: "failed", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-failed-1440x900-dark.png", legacyShell: true },
-  { name: "loading-desktop-dark", state: "loading", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-loading-1440x900-dark.png", legacyShell: true },
+  { name: "empty-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-empty-1440x900-dark.png", authority: "clio-product-contract" },
+  { name: "empty-desktop-light", state: "empty", width: 1440, height: 900, theme: "light", baseline: "reference-clio-m1-empty-1440x900-light.png", authority: "clio-product-contract" },
+  { name: "empty-mobile-dark", state: "empty", width: 390, height: 844, theme: "dark", baseline: "reference-clio-m1-empty-390x844-dark.png", authority: "clio-product-contract" },
+  { name: "empty-mobile-light", state: "empty", width: 390, height: 844, theme: "light", baseline: "reference-clio-m1-empty-390x844-light.png", authority: "clio-product-contract" },
+  { name: "populated-desktop-dark", state: "populated", width: 1280, height: 800, theme: "dark", baseline: "reference-clio-m1-populated-1280x800-dark.png", authority: "clio-product-contract" },
+  { name: "populated-mobile-dark", state: "populated", width: 390, height: 844, theme: "dark", baseline: "reference-clio-m1-populated-390x844-dark.png", authority: "clio-product-contract" },
+  { name: "populated-mobile-light", state: "populated", width: 390, height: 844, theme: "light", baseline: "reference-clio-m1-populated-390x844-light.png", authority: "clio-product-contract" },
+  { name: "streaming-desktop-dark", state: "streaming", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-streaming-1440x900-dark.png", authority: "clio-product-contract" },
+  { name: "disconnected-desktop-dark", state: "disconnected", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-disconnected-1440x900-dark.png", authority: "clio-product-contract" },
+  { name: "cancelled-desktop-dark", state: "cancelled", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-cancelled-1440x900-dark.png", authority: "clio-product-contract" },
+  { name: "failed-desktop-dark", state: "failed", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-failed-1440x900-dark.png", authority: "clio-product-contract" },
+  { name: "loading-desktop-dark", state: "loading", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-loading-1440x900-dark.png", authority: "clio-product-contract" },
   { name: "workspace-desktop-dark", state: "packet-drawer", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-workspace-1440x900-dark.png", authority: "clio-product-contract", heading: "Build Packet" },
   { name: "workspace-desktop-light", state: "packet-drawer", width: 1440, height: 900, theme: "light", baseline: "reference-clio-product-workspace-1440x900-light.png", authority: "clio-product-contract", heading: "Build Packet" },
   { name: "packet-workspace-desktop-dark", state: "packet-workspace", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-packet-workspace-1440x900-dark.png", authority: "clio-product-contract", heading: "Build Packet" },
   { name: "activity-rail-desktop-dark", state: "activity", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-activity-rail-1440x900-dark.png", authority: "clio-product-contract", dialog: "Activity" },
   { name: "workspace-mobile-light", state: "packet-drawer", width: 390, height: 844, theme: "light", baseline: "reference-clio-product-workspace-390x844-light.png", authority: "clio-product-contract", heading: "Build Packet" },
   { name: "activity-rail-mobile-dark", state: "activity", width: 390, height: 844, theme: "dark", baseline: "reference-clio-product-activity-rail-390x844-dark.png", authority: "clio-product-contract", dialog: "Activity" },
-  { name: "collapsed-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-collapsed-1440x900-dark.png", collapsed: true, legacyShell: true },
-  { name: "mobile-open-dark", state: "empty", width: 390, height: 844, theme: "dark", baseline: "reference-rivet-adapted-mobile-open-390x844-dark.png", mobileOpen: true, legacyShell: true },
-  { name: "knowledge-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-knowledge-1440x900-dark.png", view: "knowledge", legacyShell: true },
-  { name: "plugins-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-rivet-adapted-plugins-1440x900-dark.png", view: "plugins", legacyShell: true },
+  { name: "packet-starter-desktop-dark", state: "populated", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-packet-starter-1440x900-dark.png", authority: "clio-product-contract", button: "Build Packet" },
+  { name: "expanded-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-m1-expanded-1440x900-dark.png", authority: "clio-product-contract", legacyShell: true },
+  { name: "mobile-open-dark", state: "empty", width: 390, height: 844, theme: "dark", baseline: "reference-clio-m1-mobile-open-390x844-dark.png", authority: "clio-product-contract", mobileOpen: true },
+  { name: "settings-knowledge-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-settings-knowledge-1440x900-dark.png", authority: "clio-product-contract", settingsSection: "knowledge" },
+  { name: "settings-plugins-desktop-dark", state: "empty", width: 1440, height: 900, theme: "dark", baseline: "reference-clio-product-settings-plugins-1440x900-dark.png", authority: "clio-product-contract", settingsSection: "plugins" },
 ];
 
 function referencePath(testCase) {
@@ -151,14 +152,20 @@ async function main() {
       if (testCase.collapsed) parameters.set("collapsed", "1");
       if (testCase.legacyShell) parameters.set("legacyShell", "1");
       if (testCase.mobileOpen) parameters.set("mobile", "open");
-      if (testCase.view) parameters.set("view", testCase.view);
+      if (testCase.settingsSection) {
+        parameters.set("view", "settings");
+        parameters.set("section", testCase.settingsSection);
+      }
       await page.goto(`${baseUrl}/?${parameters}`, { waitUntil: "networkidle" });
-      if (testCase.view) {
+      if (testCase.settingsSection) {
         await page
           .getByRole("heading", {
-            name: testCase.view === "knowledge" ? "Knowledge Base" : "Plugins",
+            name:
+              testCase.settingsSection === "knowledge" ? "Knowledge Base" : "Plugins",
           })
           .waitFor();
+      } else if (testCase.button) {
+        await page.getByRole("button", { name: new RegExp(testCase.button) }).waitFor();
       } else if (testCase.heading) {
         await page.getByRole("heading", { name: testCase.heading }).waitFor();
       } else {

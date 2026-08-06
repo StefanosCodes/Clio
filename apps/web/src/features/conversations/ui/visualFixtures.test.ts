@@ -52,7 +52,12 @@ describe("visual fidelity fixtures", () => {
   it("contains a versioned packet only in the packet fixture", () => {
     expect(resolveVisualFixture("?uiFixture=packet", true)?.packet).toMatchObject({
       version: 2,
-      content: { audience: "Acme Studio" },
+      content: {
+        audience: "Orbit Works",
+        decision_flow: expect.arrayContaining([
+          expect.objectContaining({ from: "Conversation intent" }),
+        ]),
+      },
     });
     expect(
       resolveVisualFixture("?uiFixture=packet-workspace", true)?.packet,

@@ -1,7 +1,7 @@
 # STE-8 Rivet UI fidelity contract
 
 Date: 2026-08-03
-Status: representative shell accepted; Codex-style split-workspace amendment implemented and final owner visual acceptance pending
+Status: representative shell accepted; final owner-authorized M1 UX closeout in verification
 Instruction class: clone/port for retained Rivet surfaces; owner-authorized adapt for the default desktop chat workspace
 Design authority: repository owner through the launched corrective `/goal`
 
@@ -14,7 +14,7 @@ Design authority: repository owner through the launched corrective `/goal`
   - `packages/react/src/components`
   - `packages/react/src/styles.css`
 - Reference precedence: the exact committed source and its rendered fixture outrank the prior Clio screenshot and the prior completion receipt's visual claim.
-- Approved adaptation boundary: Clio data, API, URL, organization, and stream/run behavior may replace Rivet internals while retaining Rivet's observable presentation and interaction language. The owner-approved [`ste-8-codex-workspace-layout.md`](./ste-8-codex-workspace-layout.md) additionally makes the desktop chat route a compact-nav, resizable conversation/Packet workspace.
+- Approved adaptation boundary: Clio data, API, URL, organization, and stream/run behavior may replace Rivet internals while retaining Rivet's observable presentation and interaction language. The owner-approved [`ste-8-m1-ux-closeout.md`](./ste-8-m1-ux-closeout.md) removes composer tools/skills, keeps Packet creation reachable in-thread, and makes saved Packets read-only Markdown documents.
 - Explicit non-goals: new palette, third-party persistence, service-role REST access, knowledge ingestion, plugin execution, generic registries, or recovery of omitted upstream business logic.
 
 The prior `docs/evidence/ste-8-shell.png` proves that the functional Clio shell ran. It is not reference-fidelity evidence and is superseded for visual acceptance by this corrective gate.
@@ -67,16 +67,17 @@ All comparisons use the same local Chromium build, operating system, font availa
 | --- | --- | --- | --- | --- | --- |
 | Rivet wordmark/header | Clio brand in identical shell geometry | adapted | same-condition desktop/mobile captures | Text changes from Rivet to Clio only | Product contract |
 | Expanded/collapsed sidebar | Conversation/navigation rail | adapted | captures plus collapse interaction | Clio conversations replace Rivet sessions | Goal |
-| New Chat, Knowledge Base, Plugins navigation | New conversation plus in-scope Clio navigation | adapted/deferred | surface capture and matrix | Deferred items may remain visibly unavailable; no invented styling | M1 scope |
+| New Chat, Knowledge Base, Plugins navigation | New conversation plus Knowledge Base and Plugins under Settings | adapted/deferred | Settings deep-link captures and matrix | Deferred settings remain visibly unavailable; no execution claim | Owner closeout |
 | Recent chats and row menu | Durable Clio conversations | adapted | populated capture plus functional test | Backend/state only | Goal |
 | Empty chat | Clio empty conversation | exact presentation | desktop/mobile light/dark diff | Required Clio copy may differ only if recorded | Goal |
-| Prompt composer and action menu | Clio turn composer and shortcuts | adapted | empty/compact/menu captures | Clio shortcuts replace unavailable Rivet actions inside same patterns | Product contract |
+| Prompt composer | Clio freeform turn composer | adapted | empty/compact captures and component tests | Only prompt plus send/stop; no plus menu or visible skills | Owner closeout |
 | User/assistant messages | Durable Clio messages | exact presentation | populated diff | Data only | Goal |
 | Thinking/activity | Clio streaming status | adapted | streaming capture and reducer test | Clio events mapped to same presentation | Goal |
 | Theme control | Clio theme control | exact | light/dark captures | None | Goal |
 | Mobile drawer/sidebar | Clio mobile navigation | exact presentation | 390×844 captures and interaction | Data only | Goal |
 | Transcript artifact | Build Packet card after the conversational response | adapted | inline artifact capture and behavior | New owner-authorized product hierarchy | Owner amendment |
-| Persistent content pane | Default Build Packet preview/editor beside the conversation, with full-view promotion | adapted | split-workspace capture, drag/keyboard, edit/save, and expansion behavior | Codex-style owner-authorized interaction | Owner amendment |
+| Packet creation action | In-thread Build Packet starter after conversation context exists | adapted | component test and product capture | Explicit fixture creation without composer controls | Owner closeout |
+| Secondary content pane | Read-only saved Build Packet beside the conversation, with full-view promotion | adapted | split-workspace capture, create/open/reload, and expansion behavior | Codex-style owner-authorized interaction | Owner closeout |
 | Central artifact workspace | Optional focused Build Packet view with back-to-conversation action | adapted | central workspace capture and behavior | New owner-authorized product hierarchy | Owner amendment |
 | Activity rail | Safe activity, tools, sources, duration, and recovery detail | adapted | open activity capture and behavior | Mutually exclusive with the Packet rail | Owner amendment |
 | Organization selector | Workspace/account area | adapted | two-org captures and isolation test | Fixture authority label retained without new visual system | Goal |

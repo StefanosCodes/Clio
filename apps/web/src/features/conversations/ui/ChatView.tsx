@@ -7,9 +7,8 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import type { SkillCatalogItem } from "./catalog";
 import { AgentActivity, type ActivityDetail } from "./AgentActivity";
-import { BuildPacketCard } from "./BuildPacket";
+import { BuildPacketCard, BuildPacketStarter } from "./BuildPacket";
 import { PromptComposer } from "./PromptComposer";
 import type { BuildPacket, ChatSession } from "./types";
 
@@ -17,15 +16,15 @@ type ChatViewProps = {
   session: ChatSession;
   focusPacketCard?: boolean;
   isStreaming: boolean;
+  packetCreationError: boolean;
+  packetCreationPending: boolean;
+  showPacketStarter?: boolean;
   openActivityMessageId: string | null;
   packet: BuildPacket | null;
-  skills: SkillCatalogItem[];
-  onOpenConnectors: () => void;
-  onOpenContext: () => void;
+  onCreatePacket: () => void;
   onOpenActivity: (detail: ActivityDetail) => void;
   onOpenPacket: () => void;
-  onOpenSkills: () => void;
-  onSend: (prompt: string, skillIds: string[]) => void;
+  onSend: (prompt: string) => void;
   onStop: () => void;
 };
 
@@ -93,21 +92,18 @@ export function ChatView({
   focusPacketCard = false,
   session,
   isStreaming,
+  packetCreationError,
+  packetCreationPending,
+  showPacketStarter = true,
   packet,
   openActivityMessageId,
-  skills,
-  onOpenConnectors,
-  onOpenContext,
+  onCreatePacket,
   onOpenActivity,
   onOpenPacket,
-  onOpenSkills,
   onSend,
   onStop,
 }: ChatViewProps) {
   const [draft, setDraft] = useState("");
-  const [selectedSkill, setSelectedSkill] = useState<SkillCatalogItem | null>(
-    null,
-  );
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const hasMessages = session.messages.length > 0;
@@ -123,13 +119,12 @@ export function ChatView({
 
   useEffect(() => {
     setDraft("");
-    setSelectedSkill(null);
     textareaRef.current?.focus();
   }, [session.id]);
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = hasMessages ? "24px" : "48px";
+      textareaRef.current.style.height = hasMessages ? "22px" : "44px";
     }
   }, [hasMessages]);
 
@@ -139,10 +134,9 @@ export function ChatView({
       return;
     }
     setDraft("");
-    onSend(prompt, selectedSkill ? [selectedSkill.id] : []);
-    setSelectedSkill(null);
+    onSend(prompt);
     if (textareaRef.current) {
-      textareaRef.current.style.height = "24px";
+      textareaRef.current.style.height = "22px";
     }
   };
 
@@ -152,16 +146,9 @@ export function ChatView({
         ref={textareaRef}
         compact={hasMessages}
         isStreaming={isStreaming}
-        skills={skills}
-        selectedSkill={selectedSkill}
         value={draft}
-        onOpenConnectors={onOpenConnectors}
-        onOpenContext={onOpenContext}
-        onOpenSkills={onOpenSkills}
         onStop={onStop}
         onSubmit={submit}
-        onRemoveSkill={() => setSelectedSkill(null)}
-        onSelectSkill={setSelectedSkill}
         onValueChange={setDraft}
       />
 
@@ -194,6 +181,12 @@ export function ChatView({
                   packet={packet}
                   onOpen={onOpenPacket}
                 />
+              ) : showPacketStarter && !isStreaming ? (
+                <BuildPacketStarter
+                  disabled={packetCreationPending}
+                  error={packetCreationError}
+                  onCreate={onCreatePacket}
+                />
               ) : null}
             </div>
           </div>
@@ -201,7 +194,10 @@ export function ChatView({
         </>
       ) : (
         <section className="empty-chat">
-          <h1>What&apos;s on the agenda today?</h1>
+          <h1>Turn an idea into planned work</h1>
+          <p className="empty-chat-subtitle">
+            Describe the outcome, problem, or change. Clio will shape the scope and evidence.
+          </p>
           {composer}
         </section>
       )}
