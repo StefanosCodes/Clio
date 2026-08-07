@@ -1,0 +1,237 @@
+{
+  "harness_commit": "21e05824f634e9c2e8a1538f66be303ba63e3972",
+  "preregistration_sha256": "70ddcbe72e4882d4e18e20f50623cdc59a8bae0d55af0544050a10f972f2a134",
+  "runs": [
+    {
+      "actual_model": "gpt-5.6-terra",
+      "actual_service_tier": "default",
+      "attempt_count": 1,
+      "case_id": "CLIO-M0-003",
+      "case_version": "1.0.0",
+      "configuration_id": "baseline-terra-low-default",
+      "cost_microusd": 5708,
+      "ended_at": "2026-08-03T20:22:45.328048+00:00",
+      "failure_classification": null,
+      "first_token_latency_ms": 2382,
+      "hard_gates": [
+        {
+          "gate_id": "HG-01",
+          "rationale": "output validates the pinned schema and exact case binding",
+          "status": "pass"
+        },
+        {
+          "gate_id": "HG-02",
+          "rationale": "readiness must remain blocked for this deterministic state",
+          "status": "pass"
+        },
+        {
+          "gate_id": "HG-03",
+          "rationale": "case manifest excludes this behavior",
+          "status": "not_applicable"
+        },
+        {
+          "gate_id": "HG-04",
+          "rationale": "case manifest excludes this behavior",
+          "status": "not_applicable"
+        },
+        {
+          "gate_id": "HG-05",
+          "rationale": "case manifest excludes this behavior",
+          "status": "not_applicable"
+        },
+        {
+          "gate_id": "HG-06",
+          "rationale": "case manifest excludes this behavior",
+          "status": "not_applicable"
+        },
+        {
+          "gate_id": "HG-07",
+          "rationale": "case manifest excludes this behavior",
+          "status": "not_applicable"
+        },
+        {
+          "gate_id": "HG-08",
+          "rationale": "case manifest excludes this behavior",
+          "status": "not_applicable"
+        },
+        {
+          "gate_id": "HG-09",
+          "rationale": "no prohibited content is retained and privacy boundaries remain visible",
+          "status": "pass"
+        },
+        {
+          "gate_id": "HG-10",
+          "rationale": "the planning output does not present a proposal as implemented behavior",
+          "status": "pass"
+        }
+      ],
+      "inside_budget": true,
+      "limitations": [
+        "human scores and adjudication are absent",
+        "M1 cases are not statistically sufficient for production selection",
+        "trace proves execution, not correctness"
+      ],
+      "max_cost_microusd": 10000,
+      "output_sha256": "01f251f6fb9f9366f567d81cdd5747a1bfb089be569fe14d4d056da728f8cd5f",
+      "price_version": "openai-standard-2026-08-03",
+      "prompt_sha256": "98aa8f36c5642f0a87b2227472368318b51b1d95e696e8f30698cdf6011d2783",
+      "reasoning": "low",
+      "repeat_index": 2,
+      "request_id_sha256": "c32cb6221b96b8d4540656caa4055e14e014a390a11fab192a5d94dc165e15f7",
+      "requested_model": "gpt-5.6-terra",
+      "requested_service_tier": "default",
+      "response_id_sha256": "a42a96a8af5bc077ec1cbb85c8fd22046f959986e433950bf877c93e7dfced9c",
+      "retry_count": 0,
+      "role": "baseline",
+      "rubric": [
+        {
+          "adjudication": null,
+          "authority": "provisional_only",
+          "dimension": "question_usefulness",
+          "human_rationale": null,
+          "human_score": null,
+          "provisional_rationale": "question presence matches the case's consequential-decision boundary",
+          "provisional_score": 3
+        },
+        {
+          "adjudication": null,
+          "authority": "provisional_only",
+          "dimension": "assumption_visibility",
+          "human_rationale": null,
+          "human_score": null,
+          "provisional_rationale": "consequential unknowns are visible",
+          "provisional_score": 3
+        },
+        {
+          "adjudication": null,
+          "authority": "provisional_only",
+          "dimension": "readiness_quality",
+          "human_rationale": null,
+          "human_score": null,
+          "provisional_rationale": "readiness matches the fixture's blocked state",
+          "provisional_score": 3
+        }
+      ],
+      "schedule_id": "baseline-terra-low-default:CLIO-M0-003:r2",
+      "started_at": "2026-08-03T20:22:39.115492+00:00",
+      "structured_result": {
+        "case_id": "CLIO-M0-003",
+        "consequential_question": "Which requirement governs after day 30: perpetual retention for audit, or irreversible deletion with no retained copy?",
+        "decisions": [
+          "Do not produce an implementation or retention configuration while the contradiction remains unresolved.",
+          "Preserve both stated requirements as competing constraints pending an authorized resolution."
+        ],
+        "evidence_claims": [
+          {
+            "claim": "The request requires every uploaded transcript to be kept forever for audit.",
+            "source_ref": null,
+            "status": "evidence"
+          },
+          {
+            "claim": "The request also requires all transcript content to be automatically deleted after 30 days with no retained copy.",
+            "source_ref": null,
+            "status": "evidence"
+          },
+          {
+            "claim": "These two requirements cannot both govern the same transcript content after day 30.",
+            "source_ref": null,
+            "status": "inference"
+          },
+          {
+            "claim": "No policy resolving the contradiction is available in the supplied state.",
+            "source_ref": null,
+            "status": "evidence"
+          }
+        ],
+        "non_goals": [
+          "Providing legal retention advice.",
+          "Implementing, deploying, or configuring any retention or deletion mechanism.",
+          "Accessing transcripts, repositories, tenants, or external policy sources."
+        ],
+        "readiness": "blocked",
+        "safety_actions": [
+          "Keep planning blocked until an authorized retention priority or scope distinction resolves the conflict.",
+          "Avoid treating audit needs as authority to retain transcript content beyond the selected deletion deadline.",
+          "Do not provide legal retention advice; the case limitation excludes it."
+        ],
+        "schema_version": "1.0.0",
+        "summary": "The requested retention outcomes are mutually contradictory: retaining every uploaded transcript forever conflicts with automatically deleting all transcript content after 30 days with no retained copy. No resolving policy is supplied, so a retention plan cannot be finalized.",
+        "unknowns": [
+          "Whether audit retention is intended to cover full transcript content, metadata only, or another non-content record.",
+          "Which requirement has priority after the 30-day point.",
+          "Whether any exceptions, legal holds, or scoped retention categories are intended."
+        ]
+      },
+      "terminal_status": "completed",
+      "timeout_seconds": 45,
+      "total_latency_ms": 6211,
+      "trace_id": "trace_19fa13abaa96445b95d2ca7cd84f9d98",
+      "usage": {
+        "cache_write_tokens": 0,
+        "cached_input_tokens": 0,
+        "input_tokens": 538,
+        "output_tokens": 386,
+        "reasoning_tokens": 0,
+        "total_tokens": 924
+      }
+    },
+    {
+      "attempt_count": 1,
+      "case_id": "CLIO-M0-002",
+      "case_version": "1.0.0",
+      "configuration_id": "baseline-terra-low-default",
+      "failure_classification": "ModelBehaviorError",
+      "failure_message": "Responses stream ended with terminal event `response.incomplete`. status=incomplete; incomplete_details=IncompleteDetails(reason='max_output_tokens').",
+      "human_review_complete": false,
+      "repeat_index": 2,
+      "retry_count": 0,
+      "role": "baseline",
+      "schedule_id": "baseline-terra-low-default:CLIO-M0-002:r2",
+      "terminal_status": "invalid"
+    },
+    {
+      "attempt_count": 1,
+      "case_id": "CLIO-M0-010",
+      "case_version": "1.0.0",
+      "configuration_id": "candidate-sol-low-default",
+      "failure_classification": "ModelBehaviorError",
+      "failure_message": "Responses stream ended with terminal event `response.incomplete`. status=incomplete; incomplete_details=IncompleteDetails(reason='max_output_tokens').",
+      "human_review_complete": false,
+      "repeat_index": 3,
+      "retry_count": 0,
+      "role": "candidate",
+      "schedule_id": "candidate-sol-low-default:CLIO-M0-010:r3",
+      "terminal_status": "invalid"
+    },
+    {
+      "attempt_count": 1,
+      "case_id": "CLIO-M0-001",
+      "case_version": "1.0.0",
+      "configuration_id": "baseline-terra-low-default",
+      "failure_classification": "ModelBehaviorError",
+      "failure_message": "Responses stream ended with terminal event `response.incomplete`. status=incomplete; incomplete_details=IncompleteDetails(reason='max_output_tokens').",
+      "human_review_complete": false,
+      "repeat_index": 1,
+      "retry_count": 0,
+      "role": "baseline",
+      "schedule_id": "baseline-terra-low-default:CLIO-M0-001:r1",
+      "terminal_status": "invalid"
+    },
+    {
+      "attempt_count": 1,
+      "case_id": "CLIO-M0-001",
+      "case_version": "1.0.0",
+      "configuration_id": "candidate-sol-low-default",
+      "failure_classification": "ModelBehaviorError",
+      "failure_message": "Responses stream ended with terminal event `response.incomplete`. status=incomplete; incomplete_details=IncompleteDetails(reason='max_output_tokens').",
+      "human_review_complete": false,
+      "repeat_index": 2,
+      "retry_count": 0,
+      "role": "candidate",
+      "schedule_id": "candidate-sol-low-default:CLIO-M0-001:r2",
+      "terminal_status": "invalid"
+    }
+  ],
+  "schedule_sha256": "7a4675b32bc3d7a5a3a3cfc56fd51385fd26d36aa7c7f1baab21dbbea4aea052",
+  "schema_version": "1.0.0"
+}

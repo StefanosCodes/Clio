@@ -1,0 +1,241 @@
+{
+  "status": "fail",
+  "reference": "/Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/reference-rivet-empty-1440x900-dark.png",
+  "candidate": "/Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/clio-representative-1440x900-dark.png",
+  "width": 1440,
+  "height": 900,
+  "totalPixels": 1296000,
+  "exactMismatchPixels": 9921,
+  "exactMismatchRatio": 0.007655092592592593,
+  "perceptualMismatchPixels": 4295,
+  "perceptualMismatchRatio": 0.0033140432098765433,
+  "meanAbsoluteError": 1.1682008744855967,
+  "mse": 232.2905897633745,
+  "psnr": 24.47048744251568,
+  "ssim": 0.9446682753506153,
+  "comparison": {
+    "background": "#ffffff",
+    "pixelmatchThreshold": 0.1,
+    "includeAntialiasing": false
+  },
+  "pngMetadata": {
+    "reference": {
+      "chunkCounts": {
+        "IHDR": 1,
+        "IDAT": 9,
+        "IEND": 1
+      },
+      "width": 1440,
+      "height": 900,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0
+    },
+    "candidate": {
+      "chunkCounts": {
+        "IHDR": 1,
+        "IDAT": 14,
+        "IEND": 1
+      },
+      "width": 1440,
+      "height": 900,
+      "bitDepth": 8,
+      "colorType": 2,
+      "interlace": 0
+    }
+  },
+  "colorAnalysis": {
+    "reference": {
+      "stride": 3,
+      "sampledPixels": 144000,
+      "uniqueSampledColors": 229,
+      "palette": [
+        {
+          "hex": "#000000",
+          "sampleRatio": 0.912951
+        },
+        {
+          "hex": "#212121",
+          "sampleRatio": 0.070486
+        },
+        {
+          "hex": "#181818",
+          "sampleRatio": 0.007271
+        },
+        {
+          "hex": "#f5f5f5",
+          "sampleRatio": 0.002
+        },
+        {
+          "hex": "#f5a000",
+          "sampleRatio": 0.00066
+        },
+        {
+          "hex": "#5c5c5c",
+          "sampleRatio": 0.000632
+        },
+        {
+          "hex": "#262626",
+          "sampleRatio": 0.000611
+        },
+        {
+          "hex": "#a1a1a1",
+          "sampleRatio": 0.000368
+        },
+        {
+          "hex": "#545454",
+          "sampleRatio": 0.000167
+        },
+        {
+          "hex": "#f4f4f4",
+          "sampleRatio": 0.000132
+        }
+      ]
+    },
+    "candidate": {
+      "stride": 3,
+      "sampledPixels": 144000,
+      "uniqueSampledColors": 243,
+      "palette": [
+        {
+          "hex": "#000000",
+          "sampleRatio": 0.906632
+        },
+        {
+          "hex": "#212121",
+          "sampleRatio": 0.070583
+        },
+        {
+          "hex": "#181818",
+          "sampleRatio": 0.007264
+        },
+        {
+          "hex": "#f5f5f5",
+          "sampleRatio": 0.002979
+        },
+        {
+          "hex": "#f5a000",
+          "sampleRatio": 0.000687
+        },
+        {
+          "hex": "#5c5c5c",
+          "sampleRatio": 0.000632
+        },
+        {
+          "hex": "#262626",
+          "sampleRatio": 0.000618
+        },
+        {
+          "hex": "#a1a1a1",
+          "sampleRatio": 0.000396
+        },
+        {
+          "hex": "#f4f4f4",
+          "sampleRatio": 0.000292
+        },
+        {
+          "hex": "#545454",
+          "sampleRatio": 0.000236
+        }
+      ]
+    }
+  },
+  "topErrorTiles": [
+    {
+      "x": 96,
+      "y": 288,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 27.3332,
+      "mismatchRatio": 0.163411
+    },
+    {
+      "x": 0,
+      "y": 480,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 24.2246,
+      "mismatchRatio": 0.148546
+    },
+    {
+      "x": 96,
+      "y": 480,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 24.1906,
+      "mismatchRatio": 0.141168
+    },
+    {
+      "x": 0,
+      "y": 288,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 22.1124,
+      "mismatchRatio": 0.1301
+    },
+    {
+      "x": 0,
+      "y": 384,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 16.2511,
+      "mismatchRatio": 0.099501
+    },
+    {
+      "x": 96,
+      "y": 864,
+      "width": 96,
+      "height": 36,
+      "meanAbsoluteError": 14.3238,
+      "mismatchRatio": 0.161748
+    },
+    {
+      "x": 96,
+      "y": 384,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 11.5507,
+      "mismatchRatio": 0.066515
+    },
+    {
+      "x": 96,
+      "y": 768,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 6.5998,
+      "mismatchRatio": 0.041558
+    },
+    {
+      "x": 0,
+      "y": 864,
+      "width": 96,
+      "height": 36,
+      "meanAbsoluteError": 6.5043,
+      "mismatchRatio": 0.078993
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 6.241,
+      "mismatchRatio": 0.044596
+    },
+    {
+      "x": 0,
+      "y": 768,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 4.003,
+      "mismatchRatio": 0.033637
+    },
+    {
+      "x": 96,
+      "y": 192,
+      "width": 96,
+      "height": 96,
+      "meanAbsoluteError": 3.0952,
+      "mismatchRatio": 0.017578
+    }
+  ]
+}

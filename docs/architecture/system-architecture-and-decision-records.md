@@ -410,13 +410,16 @@ M1 may begin foundation/evaluation work only when:
 7. the first real M1 planning-model response is bounded by the STE-40 price,
    development credential, usage persistence, failure classification, and
    redaction gates; and
-8. the completed grouped draft PR has recorded review evidence from three
-   target requesters and two engineers plus explicit human pre-merge approval.
+8. the accepted M0 branch has reached `origin/main` through an explicit human
+   merge decision and the user has launched the M1 execution goal.
 
 The first real baseline-versus-candidate model run is an M1/STE-37 action, not
-M0 evidence. Review evidence must come from three target requesters and two
-engineers. The completed grouped PR remains draft until that evidence and
-explicit human pre-merge approval exist.
+M0 evidence. The M0 review form remains an honest historical record: its five
+slots were not completed and must not be backfilled or represented as evidence.
+PR #1 nevertheless reached `origin/main` through the repository owner's merge
+decision, and the explicitly launched M1 goal accepts that merged state as the
+current entry authority. STE-7 records and reconciles the stale PR description
+without inventing the missing review evidence.
 
 ## Current source basis
 

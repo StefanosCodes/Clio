@@ -1,0 +1,95 @@
+{
+  "events": [
+    {
+      "cursor": 0,
+      "event": "engineering_analysis_job_created",
+      "evidence_class": "synthetic",
+      "job_id": "analysis-job-synthetic-001",
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "repository_commit": "1111111111111111111111111111111111111111",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0"
+    },
+    {
+      "attempt_id": "attempt-synthetic-001",
+      "cursor": 1,
+      "event": "job_attempt_started",
+      "evidence_class": "synthetic",
+      "job_id": "analysis-job-synthetic-001",
+      "lease_generation": 1,
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0"
+    },
+    {
+      "attempt_id": "attempt-synthetic-001",
+      "cursor": 2,
+      "event": "lease_expired",
+      "evidence_class": "synthetic",
+      "job_id": "analysis-job-synthetic-001",
+      "lease_generation": 1,
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0"
+    },
+    {
+      "attempt_id": "attempt-synthetic-002",
+      "cursor": 3,
+      "event": "lease_recovered",
+      "evidence_class": "synthetic",
+      "expired_attempt_id": "attempt-synthetic-001",
+      "job_id": "analysis-job-synthetic-001",
+      "lease_generation": 2,
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0"
+    },
+    {
+      "attempt_id": "attempt-synthetic-002",
+      "authority": "read_only_synthetic",
+      "call_id": "mcp-call-synthetic-001",
+      "cursor": 4,
+      "event": "codex_mcp_call_started",
+      "evidence_class": "synthetic",
+      "job_id": "analysis-job-synthetic-001",
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0"
+    },
+    {
+      "attempt_id": "attempt-synthetic-002",
+      "call_id": "mcp-call-synthetic-001",
+      "cursor": 5,
+      "event": "typed_result_recorded",
+      "evidence_class": "synthetic",
+      "job_id": "analysis-job-synthetic-001",
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "result_schema_version": "1.0.0",
+      "result_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0"
+    },
+    {
+      "attempt_id": "attempt-synthetic-002",
+      "cursor": 6,
+      "event": "engineering_analysis_job_completed",
+      "evidence_class": "synthetic",
+      "job_id": "analysis-job-synthetic-001",
+      "packet_version": 4,
+      "planning_run_id": "planning-run-synthetic-001",
+      "runtime_evidence": false,
+      "schema_version": "1.0.0",
+      "terminal_status": "completed"
+    }
+  ],
+  "evidence_class": "synthetic",
+  "runtime_evidence": false,
+  "schema_version": "1.0.0",
+  "truthfulness": "expired lease is representable; no worker recovery ran"
+}

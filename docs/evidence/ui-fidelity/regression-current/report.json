@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-08-06T16:10:50.306Z",
+  "thresholds": {
+    "minimumSsim": 0.999,
+    "maximumPerceptualMismatchRatio": 0.001
+  },
+  "masks": [],
+  "cases": [
+    {
+      "case": "empty-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-empty-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/empty-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/empty-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "empty-desktop-light",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-empty-1440x900-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/empty-desktop-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/empty-desktop-light.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "empty-mobile-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-empty-390x844-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/empty-mobile-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/empty-mobile-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "empty-mobile-light",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-empty-390x844-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/empty-mobile-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/empty-mobile-light.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "populated-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-populated-1280x800-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/populated-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/populated-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "populated-mobile-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-populated-390x844-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/populated-mobile-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/populated-mobile-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "populated-mobile-light",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-populated-390x844-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/populated-mobile-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/populated-mobile-light.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "streaming-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-streaming-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/streaming-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/streaming-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "disconnected-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-disconnected-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/disconnected-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/disconnected-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "cancelled-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-cancelled-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/cancelled-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/cancelled-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "failed-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-failed-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/failed-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/failed-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "loading-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-loading-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/loading-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/loading-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "workspace-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-workspace-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-dark.diff.png",
+      "ssim": 0.999999737,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "workspace-desktop-light",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-workspace-1440x900-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/workspace-desktop-light.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "packet-workspace-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-packet-workspace-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/packet-workspace-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/packet-workspace-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "activity-rail-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-activity-rail-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/activity-rail-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/activity-rail-desktop-dark.diff.png",
+      "ssim": 0.999999846,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "workspace-mobile-light",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-workspace-390x844-light.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/workspace-mobile-light.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/workspace-mobile-light.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "activity-rail-mobile-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-activity-rail-390x844-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/activity-rail-mobile-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/activity-rail-mobile-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "packet-starter-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-packet-starter-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/packet-starter-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/packet-starter-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "expanded-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-expanded-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/expanded-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/expanded-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "mobile-open-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-m1-mobile-open-390x844-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/mobile-open-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/mobile-open-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "settings-knowledge-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-settings-knowledge-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/settings-knowledge-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/settings-knowledge-desktop-dark.diff.png",
+      "ssim": 1,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    },
+    {
+      "case": "settings-plugins-desktop-dark",
+      "authority": "clio-product-contract",
+      "reference": "docs/evidence/ui-fidelity/reference-clio-product-settings-plugins-1440x900-dark.png",
+      "candidate": "docs/evidence/ui-fidelity/regression-current/settings-plugins-desktop-dark.png",
+      "diff": "docs/evidence/ui-fidelity/regression-current/settings-plugins-desktop-dark.diff.png",
+      "ssim": 0.999999982,
+      "perceptualMismatchPixels": 0,
+      "perceptualMismatchRatio": 0,
+      "status": "production-parity"
+    }
+  ]
+}

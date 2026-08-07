@@ -1,0 +1,58 @@
+{
+  "capturedAt": "2026-08-03T20:59:44.185Z",
+  "source": "http://127.0.0.1:5173/organizations/fixture-acme/conversations/52e05e18-8ed6-4c54-b899-63dfea74cede",
+  "chromiumVersion": "149.0.7827.55",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 1
+  },
+  "clip": {
+    "x": 0,
+    "y": 0,
+    "width": 390,
+    "height": 844
+  },
+  "rootBounds": null,
+  "animationsDisabled": false,
+  "documentSize": {
+    "width": 390,
+    "height": 844
+  },
+  "fontStatus": "loaded",
+  "typographySignatures": [
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 14px | 400 | normal | normal | none",
+      "count": 8
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 15px | 400 | normal | normal | none",
+      "count": 3
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 12px | 400 | normal | normal | none",
+      "count": 2
+    },
+    {
+      "signature": "Arial | 14px | 400 | normal | normal | none",
+      "count": 2
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 13px | 500 | normal | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 13px | 600 | normal | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 18px | 600 | normal | normal | none",
+      "count": 1
+    },
+    {
+      "signature": "\"OpenAI Sans\", ui-sans-serif, -apple-system, \"system-ui\", \"Segoe UI\", Helvetica, Arial, sans-serif | 27px | 400 | 33.75px | normal | none",
+      "count": 1
+    }
+  ]
+}

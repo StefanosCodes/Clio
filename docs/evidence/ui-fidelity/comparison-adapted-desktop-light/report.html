@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PNG / HTML parity report</title>
+<style>
+body{margin:0;background:#111418;color:#edf2f7;font:14px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}main{max-width:1480px;margin:auto;padding:24px}h1{font:600 22px/1.2 system-ui;margin:0 0 18px}.status{display:inline-block;padding:4px 8px;border:1px solid #5d6b7a;border-radius:4px;color:#d8ff78}.metrics{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:1px;background:#35404b;border:1px solid #35404b}.metric{background:#171c22;padding:12px}.metric b{display:block;font-size:18px;color:#fff}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:16px}.panel{background:#171c22;border:1px solid #35404b;padding:10px}.panel h2{font:600 14px system-ui;margin:0 0 8px}.panel img{display:block;width:100%;height:auto;background:#fff}.details{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}table{width:100%;border-collapse:collapse}th,td{text-align:left;border-bottom:1px solid #35404b;padding:7px}pre{white-space:pre-wrap;word-break:break-word;background:#0c0f12;padding:12px;overflow:auto}@media(max-width:900px){.metrics{grid-template-columns:repeat(2,1fr)}.grid,.details{grid-template-columns:1fr}}
+</style></head><body><main>
+<h1>PNG / HTML parity <span class="status">production-parity</span></h1>
+<section class="metrics">
+<div class="metric">Exact mismatch<b>103</b>0.0079%</div>
+<div class="metric">Perceptual mismatch<b>0.0002%</b>3 px</div>
+<div class="metric">SSIM<b>0.999961</b>1.0 is identical</div>
+<div class="metric">PSNR<b>52.393 dB</b>higher is better</div>
+<div class="metric">Mean abs. error<b>0.0032</b>0–255/channel</div>
+<div class="metric">Canvas<b>1440×900</b>1,296,000 px</div>
+</section>
+<section class="grid"><div class="panel"><h2>Reference</h2><img src="file:///Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/reference-rivet-adapted-empty-1440x900-light.png"></div><div class="panel"><h2>Candidate</h2><img src="file:///Users/stefanossophocleous/StefanosDevelopment/Clio/docs/evidence/ui-fidelity/clio-fixture-empty-1440x900-light.png"></div><div class="panel"><h2>Perceptual diff</h2><img src="diff.png"></div><div class="panel"><h2>50/50 overlay</h2><img src="overlay.png"></div></section>
+<section class="details"><div class="panel"><h2>Highest-error tiles</h2><table><thead><tr><th>Origin</th><th>Size</th><th>MAE</th><th>Mismatch</th></tr></thead><tbody><tr><td>0, 96</td><td>96×96</td><td>0.4507</td><td>0.803%</td></tr><tr><td>0, 864</td><td>96×36</td><td>0.0057</td><td>0.347%</td></tr><tr><td>0, 768</td><td>96×96</td><td>0.0017</td><td>0.141%</td></tr><tr><td>1152, 480</td><td>96×96</td><td>0.0013</td><td>0.043%</td></tr></tbody></table></div><div class="panel"><h2>Dominant sampled colors</h2><p>Reference: 203 sampled colors · Candidate: 205</p><table><thead><tr><th>Reference</th><th>Share</th><th>Candidate</th><th>Share</th></tr></thead><tbody><tr><td><span style="display:inline-block;width:12px;height:12px;background:#ffffff;border:1px solid #718090;vertical-align:-2px"></span> #ffffff</td><td>70.85%</td><td><span style="display:inline-block;width:12px;height:12px;background:#ffffff;border:1px solid #718090;vertical-align:-2px"></span> #ffffff</td><td>70.85%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#f7f7f7;border:1px solid #718090;vertical-align:-2px"></span> #f7f7f7</td><td>17.15%</td><td><span style="display:inline-block;width:12px;height:12px;background:#f7f7f7;border:1px solid #718090;vertical-align:-2px"></span> #f7f7f7</td><td>17.15%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#f4f4f4;border:1px solid #718090;vertical-align:-2px"></span> #f4f4f4</td><td>7.23%</td><td><span style="display:inline-block;width:12px;height:12px;background:#f4f4f4;border:1px solid #718090;vertical-align:-2px"></span> #f4f4f4</td><td>7.23%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#fefefe;border:1px solid #718090;vertical-align:-2px"></span> #fefefe</td><td>0.83%</td><td><span style="display:inline-block;width:12px;height:12px;background:#fefefe;border:1px solid #718090;vertical-align:-2px"></span> #fefefe</td><td>0.83%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#ececec;border:1px solid #718090;vertical-align:-2px"></span> #ececec</td><td>0.73%</td><td><span style="display:inline-block;width:12px;height:12px;background:#ececec;border:1px solid #718090;vertical-align:-2px"></span> #ececec</td><td>0.73%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#fdfdfd;border:1px solid #718090;vertical-align:-2px"></span> #fdfdfd</td><td>0.46%</td><td><span style="display:inline-block;width:12px;height:12px;background:#fdfdfd;border:1px solid #718090;vertical-align:-2px"></span> #fdfdfd</td><td>0.46%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#fcfcfc;border:1px solid #718090;vertical-align:-2px"></span> #fcfcfc</td><td>0.41%</td><td><span style="display:inline-block;width:12px;height:12px;background:#fcfcfc;border:1px solid #718090;vertical-align:-2px"></span> #fcfcfc</td><td>0.41%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#fbfbfb;border:1px solid #718090;vertical-align:-2px"></span> #fbfbfb</td><td>0.38%</td><td><span style="display:inline-block;width:12px;height:12px;background:#fbfbfb;border:1px solid #718090;vertical-align:-2px"></span> #fbfbfb</td><td>0.38%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#fafafa;border:1px solid #718090;vertical-align:-2px"></span> #fafafa</td><td>0.22%</td><td><span style="display:inline-block;width:12px;height:12px;background:#fafafa;border:1px solid #718090;vertical-align:-2px"></span> #fafafa</td><td>0.22%</td></tr><tr><td><span style="display:inline-block;width:12px;height:12px;background:#171717;border:1px solid #718090;vertical-align:-2px"></span> #171717</td><td>0.20%</td><td><span style="display:inline-block;width:12px;height:12px;background:#171717;border:1px solid #718090;vertical-align:-2px"></span> #171717</td><td>0.20%</td></tr></tbody></table><h2 style="margin-top:18px">PNG metadata</h2><pre>{
+  &quot;reference&quot;: {
+    &quot;chunkCounts&quot;: {
+      &quot;IHDR&quot;: 1,
+      &quot;IDAT&quot;: 10,
+      &quot;IEND&quot;: 1
+    },
+    &quot;width&quot;: 1440,
+    &quot;height&quot;: 900,
+    &quot;bitDepth&quot;: 8,
+    &quot;colorType&quot;: 2,
+    &quot;interlace&quot;: 0
+  },
+  &quot;candidate&quot;: {
+    &quot;chunkCounts&quot;: {
+      &quot;IHDR&quot;: 1,
+      &quot;IDAT&quot;: 10,
+      &quot;IEND&quot;: 1
+    },
+    &quot;width&quot;: 1440,
+    &quot;height&quot;: 900,
+    &quot;bitDepth&quot;: 8,
+    &quot;colorType&quot;: 2,
+    &quot;interlace&quot;: 0
+  }
+}</pre></div></section>
+</main></body></html>
